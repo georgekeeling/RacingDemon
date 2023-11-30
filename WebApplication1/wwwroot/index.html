@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<!-- (c) George Arthur Keeling, Berlin 2023-->
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Racing Demon</title>
+  <meta content="Racing Demon also known as Nerts or Pounce" name="description" />
+  <link id="sCss" rel="stylesheet" href="CSS/g5Desk.css" />
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+</head>
+<body onload="Initialise()" onresize="table.resize()">
+  <div id="resources">
+  <img id="cBack0" src="img/cardBack0.svg" style="display:none">
+  <img id="cBack1" src="img/cardback1.png" style="display:none">
+  <img id="cBack2" src="img/cardback2.png" style="display:none">
+  <img id="cBack3" src="img/cardback3.png" style="display:none">
+  <img id="cBack4" src="img/cardback4.png" style="display:none">
+
+  <img id="s1" src="img/Spades01.svg" style="display:none">
+  <img id="s2" src="img/Spades02.svg" style="display:none">
+  <img id="s3" src="img/Spades03.svg" style="display:none">
+  <img id="s4" src="img/Spades04.svg" style="display:none">
+  <img id="s5" src="img/Spades05.svg" style="display:none">
+  <img id="s6" src="img/Spades06.svg" style="display:none">
+  <img id="s7" src="img/Spades07.svg" style="display:none">
+  <img id="s8" src="img/Spades08.svg" style="display:none">
+  <img id="s9" src="img/Spades09.svg" style="display:none">
+  <img id="s10" src="img/Spades10.svg" style="display:none">
+  <img id="s11" src="img/Spades11.svg" style="display:none">
+  <img id="s12" src="img/Spades12.svg" style="display:none">
+  <img id="s13" src="img/Spades13.svg" style="display:none">
+
+  <img id="h1" src="img/Hearts01.svg" style="display:none">
+  <img id="h2" src="img/Hearts02.svg" style="display:none">
+  <img id="h3" src="img/Hearts03.svg" style="display:none">
+  <img id="h4" src="img/Hearts04.svg" style="display:none">
+  <img id="h5" src="img/Hearts05.svg" style="display:none">
+  <img id="h6" src="img/Hearts06.svg" style="display:none">
+  <img id="h7" src="img/Hearts07.svg" style="display:none">
+  <img id="h8" src="img/Hearts08.svg" style="display:none">
+  <img id="h9" src="img/Hearts09.svg" style="display:none">
+  <img id="h10" src="img/Hearts10.svg" style="display:none">
+  <img id="h11" src="img/Hearts11.svg" style="display:none">
+  <img id="h12" src="img/Hearts12.svg" style="display:none">
+  <img id="h13" src="img/Hearts13.svg" style="display:none">
+
+  <img id="d1" src="img/Diamonds01.svg" style="display:none">
+  <img id="d2" src="img/Diamonds02.svg" style="display:none">
+  <img id="d3" src="img/Diamonds03.svg" style="display:none">
+  <img id="d4" src="img/Diamonds04.svg" style="display:none">
+  <img id="d5" src="img/Diamonds05.svg" style="display:none">
+  <img id="d6" src="img/Diamonds06.svg" style="display:none">
+  <img id="d7" src="img/Diamonds07.svg" style="display:none">
+  <img id="d8" src="img/Diamonds08.svg" style="display:none">
+  <img id="d9" src="img/Diamonds09.svg" style="display:none">
+  <img id="d10" src="img/Diamonds10.svg" style="display:none">
+  <img id="d11" src="img/Diamonds11.svg" style="display:none">
+  <img id="d12" src="img/Diamonds12.svg" style="display:none">
+  <img id="d13" src="img/Diamonds13.svg" style="display:none">
+
+  <img id="c1" src="img/Clubs01.svg" style="display:none">
+  <img id="c2" src="img/Clubs02.svg" style="display:none">
+  <img id="c3" src="img/Clubs03.svg" style="display:none">
+  <img id="c4" src="img/Clubs04.svg" style="display:none">
+  <img id="c5" src="img/Clubs05.svg" style="display:none">
+  <img id="c6" src="img/Clubs06.svg" style="display:none">
+  <img id="c7" src="img/Clubs07.svg" style="display:none">
+  <img id="c8" src="img/Clubs08.svg" style="display:none">
+  <img id="c9" src="img/Clubs09.svg" style="display:none">
+  <img id="c10" src="img/Clubs10.svg" style="display:none">
+  <img id="c11" src="img/Clubs11.svg" style="display:none">
+  <img id="c12" src="img/Clubs12.svg" style="display:none">
+  <img id="c13" src="img/Clubs13.svg" style="display:none">
+
+  <audio id="audiofl0" src="sounds/fail-trumpet-01.mp3"></audio>
+  <audio id="audiofl1" src="sounds/fail-buzzer-01.mp3"></audio>
+  <audio id="audiofl2" src="sounds/fail-buzzer-02.mp3"></audio>
+  <audio id="audiofl3" src="sounds/fail-buzzer-03.mp3"></audio>
+  <audio id="audioReady" src="sounds/ready.mp3"></audio>
+  <audio id="audioSteady" src="sounds/steady.mp3"></audio>
+  <audio id="audioGo" src="sounds/go.mp3"></audio>
+  <audio id="audioTick1" src="sounds/tick1.mp3"></audio>
+  <audio id="audioDing" src="sounds/ding.mp3"></audio>
+
+  </div>
+  <div id="setUpPage"> 
+    <span><a id="playButton" href="javascript:toPage('playPage')">Game</a></span>&nbsp;|&nbsp;
+    <span id="setUpButton" ><strong>Set up</strong></span>&nbsp;|&nbsp;
+    <span><a id="rulesButton" href="javascript:window.open('rules.html', '_blank')">Rules</a></span>&nbsp;
+    <span><button id="wButton" onclick="window.open(window.location.href, '_blank')" hidden>W</button></span>
+    <span><button id="testButton" onclick="doTest()" hidden>T</button></span>
+    <div class="row1 col1">
+      Name
+    </div>
+    <div class="row1 col2">
+      <input type="text" id="userName" tabindex="1" maxlength="10" size="8">
+    </div>
+    <div class="row2 col1">
+      <label for="gameList">
+      Game
+      </label>
+    </div>
+    <div class="row2 col2">
+    <select name="selGame" id="gameList" onchange="uGroups.selGameChange()">
+      <option value="Game2">None</option>
+    </select>
+    </div>
+    <div class="row2 col3">
+      <button id="buttonJoin" onclick="uGroups.joinGame()" disabled tabindex="3">Join</button>
+    </div>
+    <div class="row2 col4">
+      <button id="buttonCreate" onclick="uGroups.createGame()" disabled tabindex="4">Create</button>
+    </div>
+    <div class="row3 col1">
+      <label for="botType">
+      Bot
+      </label>
+    </div>
+    <div class="row3 col2">
+    <select id="botType" onchange="bot.setType()">
+      <option value="0">-</option>
+      <option value="1">Slow Bot</option>
+      <option value="2">Medium Bot</option>
+      <option value="3">Fast Bot</option>
+    </select>
+    </div>
+    <div class="row3 col3">
+      <button id="buttonPlayBot" onclick="uGroups.playBot()" disabled tabindex="5">Play It</button>
+    </div>
+    <div class="row4 col1" id="incomingMessage"> </div>
+    <div class="row6 col1">
+      Welcome to the great game of Racing Demon (also known as Nerts, Pounce and other names).<p></p>
+
+      First enter your Name then <br />
+      
+      1) <strong>Create</strong> a new game (and wait for others to join it) or  <br />
+
+      2) Select a Game and <strong>Join</strong> it or <br />
+
+      3) Select a Bot and <strong>Play It</strong>. <p></p>
+
+      May the best player win!
+
+    </div>
+
+  </div>
+
+  <div id="playPage" hidden> 
+    <span id="playButton" ><strong>Game</strong></span>&nbsp;|&nbsp;
+    <span><a id="setUpButton" href="javascript:toPage('setUpPage')">Set up</a></span>&nbsp;|&nbsp;
+    <span><a id="rulesButton" href="javascript:window.open('rules.html', '_blank')">Rules</a></span>&nbsp;
+    <span><button id="startButton" onclick="table.startGame()" disabled>Start</button></span>
+    <span><button id="outButton" onclick="racingDemon.out()" disabled>Out</button></span>
+    <span><button id="tidyButton" onclick="XXXXXXXX" disabled>Tidy up</button></span>
+
+    <span><button id="wButton2" onclick="window.open(window.location.href, '_blank')" hidden>W</button></span>
+    <span><button id="testButton2" onclick="doTest()" hidden>T</button></span>
+    <br />
+    <canvas id="myCanvas" width="200" height="200" 
+            style="border:1px solid #d3d3d3; background-color:green">
+    </canvas>
+    <!-- can position canvas with something like 
+      ; position:absolute; left:50px
+      in style=, and then would have to adjust 50px in resize
+      -->
+    
+  </div>
+
+  <script src="js/signalr/signalr.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/messages.js"></script>
+  <script src="js/mouse.js"></script>
+  <script src="js/rDemon.js"></script>
+  <script src="js/siteWindow.js"></script>
+  <script src="js/smallClasses.js"></script>
+  <script src="js/table.js"></script>
+  <script src="js/tsTest.js"></script>
+  <script src="js/usersGroups.js"></script>
+  <script src="js/bot.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>

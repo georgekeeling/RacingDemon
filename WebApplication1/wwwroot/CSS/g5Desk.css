@@ -1,0 +1,109 @@
+﻿/* css for desktop */
+body {
+  background-color: lightyellow;
+  font-size: 14px;
+  font-family: sans-serif;
+}
+
+button {
+    font-size: 14px;
+}
+
+select, option, input[type=text], input[type=password] {
+    font-size: 14px;
+}
+
+div {
+    font-size: 14px;
+}
+
+input[type=checkbox] {
+    transform: scale(1);
+}
+
+h1, h2 {
+    font-size: large;
+}
+
+.col1 {
+    position: absolute;
+    left: 10px;
+}
+
+.col2 {
+    position: absolute;
+    left: 80px;
+}
+
+.col3 {
+    position: absolute;
+    left: 210px;
+}
+
+.col4 {
+  position: absolute;
+  left: 280px;
+}
+
+.col5 {
+  position: absolute;
+  left: 330px;
+}
+
+:root {
+  --rowBase: 30px;
+  --rowDiff: 30px;
+}
+
+.row1 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 1);
+}
+
+.row2 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 2);
+}
+
+.row3 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 3);
+}
+
+.row4 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 4);
+}
+
+.row5 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 5);
+}
+
+.row6 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 6);
+}
+
+.row7 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 7);
+}
+
+.row8 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 8);
+}
+
+.row9 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 9);
+}
+
+.errorColor {
+  color: red;
+}
+
+.infoColor {
+  color: green;
+}

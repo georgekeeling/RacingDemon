@@ -1,0 +1,96 @@
+﻿/* css for mobile, portrait */
+body, p {
+  background-color: burlywood;
+  font-size: 30px;
+  font-family: sans-serif;
+}
+
+button {
+    font-size: 30px;
+}
+
+select, option, input[type=text], input[type=password] {
+    font-size: 30px;
+}
+
+input[type=checkbox] {
+    transform: scale(2);
+}
+
+h1 {
+    font-size: 30px
+}
+
+h2 {
+    font-size: 30px
+}
+
+.col1 {
+    position: absolute;
+    left: 10px;
+}
+
+.col2 {
+    position: absolute;
+    left: 220px;
+}
+
+.col3 {
+    position: absolute;
+    left: 600px;
+}
+
+.col4 {
+  position: absolute;
+  left: 800px;
+}
+
+:root {
+  --rowBase: 0px;
+  --rowDiff: 100px;
+}
+
+.row1 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 1);
+}
+
+.row2 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 2);
+}
+
+.row3 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 3);
+}
+
+.row4 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 4);
+}
+
+.row5 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 5);
+}
+
+.row6 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 6);
+}
+
+.row7 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 7);
+}
+
+.row8 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 8);
+}
+
+.row9 {
+  position: absolute;
+  top: calc(var(--rowBase) + var(--rowDiff) * 9);
+}

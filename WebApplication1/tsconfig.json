@@ -1,0 +1,17 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "es6",
+    "lib": [ "es6", "dom" ],
+    "sourceMap": true,
+
+    "noImplicitAny": false,
+    "noImplicitOverride": true,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "moduleResolution": "nodenext",
+    "allowJs": true,
+    "outDir": "wwwroot/js"
+
+  }
+}

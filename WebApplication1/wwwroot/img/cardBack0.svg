@@ -1,0 +1,12 @@
+﻿<svg 
+xmlns="http://www.w3.org/2000/svg"
+width="360" height="540">
+      <rect
+         width="356"
+         height="536"
+         rx="29"
+         ry="29"
+         x="2"
+         y="2"
+         style="fill:red;stroke:#000000;stroke-width:4" />
+</svg>
