@@ -1018,6 +1018,7 @@ class Table {
     }
     startGame2() {
         // start game on count of ready 2 steady 1 go 0
+        document.getElementById("inviteButton").disabled = true;
         let moves = 4;
         const players = racingDemon.players.length;
         table.clearTip();

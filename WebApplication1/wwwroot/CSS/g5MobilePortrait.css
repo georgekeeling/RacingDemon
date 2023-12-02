@@ -13,16 +13,22 @@ select, option, input[type=text], input[type=password] {
     font-size: 30px;
 }
 
+/* max-width =col3 - col2 -10 */
+select {
+  width: 100%;
+  max-width: 270px;
+}
+
 input[type=checkbox] {
     transform: scale(2);
 }
 
 h1 {
-    font-size: 30px
+    font-size: 30px;
 }
 
 h2 {
-    font-size: 30px
+    font-size: 30px;
 }
 
 .col1 {
@@ -32,22 +38,22 @@ h2 {
 
 .col2 {
     position: absolute;
-    left: 220px;
+    left: 120px;
 }
 
 .col3 {
     position: absolute;
-    left: 600px;
+    left: 400px;
 }
 
 .col4 {
   position: absolute;
-  left: 800px;
+  left: 550px;
 }
 
 :root {
   --rowBase: 0px;
-  --rowDiff: 100px;
+  --rowDiff: 70px;
 }
 
 .row1 {

@@ -1,7 +1,7 @@
 "use strict";
 // (c) George Arthur Keeling, Berlin 2023
 function doTest() {
-    uGroups.playBot();
+    document.getElementById("userName").focus();
     // endGame(15);
 }
 //var doTest = 1;

@@ -13,6 +13,12 @@ select, option, input[type=text], input[type=password] {
     font-size: 14px;
 }
 
+/* max-width =col3 - col2 -10 */
+select{
+  width: 100%;
+  max-width: 120px;
+}
+
 div {
     font-size: 14px;
 }

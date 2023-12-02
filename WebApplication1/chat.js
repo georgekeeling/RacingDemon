@@ -4,7 +4,11 @@
 class MyLogger {
   // see https://learn.microsoft.com/en-us/aspnet/core/signalr/diagnostics?view=aspnetcore-7.0#javascript-client-logging
   // do this to catch disconnect error due to sleepy client. When client wakes it is disconnected
-  // See "..\V Studio notes\demon debug\d2023-07-16a\d2023-07-16a overview.docx.docx"
+  // See "..\V Studio notes\demon debug\d2023-07-16a\d2023-07-16a overview.docx"
+
+  // it also pops up when other errors occur with very misleading message
+  // see d2023-07-16a overview.docx for example (under Catch at end)
+  
   log(logLevel, message) {
     // Use `message` and `logLevel` to record the log message to your own system
     //// line 274 of signalr.js defines var LogLevel; which can be
@@ -17,7 +21,8 @@ class MyLogger {
     // None = 6 
     if (logLevel >= 4) {
       console.error("Log level " + logLevel + " " + message);
-      alert("Fatal error level " + logLevel + "\n" + message + "\nPlease close window");
+      alert("Fatal error level " + logLevel + "\n" + message +
+        "\nSee code in chat.js MyLogger.log" + "\nPlease close window");
       window.close();
     }
     //console.error("My logging level " + logLevel + " " + message);

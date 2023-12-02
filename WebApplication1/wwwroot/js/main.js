@@ -2,8 +2,9 @@
 // (c) George Arthur Keeling, Berlin 2023
 // here are the main objects
 // some can be created immediately, others must wait until page
-// After load createConnection is called
-// once connection on (connection.start), Initialise is called 
+// After load. Initialise is called
+// then connection.start in chat.js gets called
+// parsing the URL and other things take place from there
 var pack;
 var table;
 var sound;
@@ -24,6 +25,7 @@ function Initialise() {
     // alternatives for active / inactive <a> element
     elemPlay.outerHTML = '<span id="playButton" >Game</span>';
     // elemPlay.outerHTML = '<a id="playButton" href="javascript:toPage(\'playPage\')">Play</a>';
+    document.getElementById("userName").focus();
     racingDemon = new RacingDemon;
     table = new Table();
     pack = new Pack();

@@ -22,23 +22,30 @@ class UGroups {
         this.playerName = "";
         this.startT = new Date(); // used for timing some messages
         this.creatingGroup = false;
+        this.webPageStarting = true;
         this.humanName = "";
         this.botName = "";
         // nothing to do
     }
     TellMeGroups() {
+        // called when website launched from cgat.js
         this.groups = [];
         console.log("TellMeGroups");
         send("TellMeGroups");
     }
     GroupList(gList) {
-        // incoming message with list of groups
+        // incoming message with list of groups. Requested by TellMeGroups() or 
+        // or sent here because a group was added / removed 
         this.groups.length = 0;
         for (let i = 0; i < gList.length; i++) {
             this.groups[i] = new Group(gList[i].name, gList[i].players, gList[i].playing, gList[i].onMobile, gList[i].aspectRatio);
         }
         this.showGroups();
-        this.parseURL();
+        if (this.webPageStarting) {
+            document.getElementById("userName").focus;
+            this.webPageStarting = false;
+            this.parseURL();
+        }
     }
     createGame() {
         this.creatingGroup = true;
@@ -82,15 +89,18 @@ class UGroups {
     }
     joinGame2() {
         const element = document.getElementById("gameList");
+        if (element.innerText == "None") {
+            // last remaining group deleted behind my back!
+            this.infoMessage("Sorry, game cancelled.");
+            document.getElementById("buttonJoin").disabled = true;
+            return;
+        }
         const group = this.groups[Number(element.value)];
         const groupName = group.name;
         console.log("Join group " + groupName);
-        if (this.playerName == "") {
-            alert("Choose and Check Player name before joining game");
-            return;
-        }
         if (group.players == RDmaxPlayers || group.playing == true || (group.players == 2 && group.onMobile)) {
             this.infoMessage("Oops, cannot join this game");
+            document.getElementById("buttonJoin").disabled = true;
             console.log("client rejected group/game join");
         }
         else {
@@ -99,6 +109,7 @@ class UGroups {
     }
     JoinGroupRejected() {
         this.infoMessage("Oops, cannot join this game");
+        document.getElementById("buttonJoin").disabled = true;
         console.log("server rejected group/game join");
     }
     JoinGroupAccepted() {
@@ -235,13 +246,14 @@ class UGroups {
     }
     parseURL() {
         // process URL command tail
-        var myLoc = window.location;
+        let myLoc = window.location;
         const paramArray = myLoc.search.split("&");
         switch (paramArray[1]) {
             case "joinBot":
                 uGroups.finishPlayBot(decodeURIComponent(paramArray[2]), decodeURIComponent(paramArray[3]));
                 break;
             case "invite":
+                this.acceptInvite(decodeURIComponent(paramArray[2]));
                 break;
             default:
             // nothing!
@@ -252,15 +264,47 @@ class UGroups {
         // botName should be in groups list found by TellMeGroups(). TellMeGroups() NOT CALLED YET
         // find botName in groups list, set game selector accordingly, call uGroups.joinGame()
         document.getElementById("userName").value = playerName;
-        let botGroupI = 0;
-        while (this.groups[botGroupI].name != botName) {
-            botGroupI++;
-            if (botGroupI >= this.groups.length) {
-                return; // some error!
+        let botGroupI = this.findGameAndSelect(botName);
+        if (botGroupI == -1) {
+            return; // some error!
+        }
+        this.joinGame();
+    }
+    findGameAndSelect(game) {
+        let gameI = 0;
+        while (this.groups[gameI].name != game) {
+            gameI++;
+            if (gameI >= this.groups.length) {
+                return -1;
             }
         }
-        document.getElementById("gameList").value = botGroupI.toString();
-        this.joinGame();
+        document.getElementById("gameList").value = gameI.toString();
+        return gameI;
+    }
+    invite() {
+        // copy invite to clip board
+        let myLoc = window.location;
+        navigator.clipboard.writeText(myLoc.origin + "/?&invite&" + this.myGroup);
+        table.writeCentralBiggish("Invite copied to clipboard");
+    }
+    acceptInvite(toGame) {
+        let gameI = this.findGameAndSelect(toGame);
+        if (gameI == -1) {
+            this.errorMessage("Sorry, invitation has expired.");
+            return; // some error
+        }
+        // user must enter name and then press Join
+        this.selGameChange(); // enables Join, if possible
+        if (document.getElementById("buttonJoin").disabled) {
+            // was not possible
+            this.errorMessage("Sorry, unacceptable invite.");
+            return;
+        }
+        document.getElementById("normalHelp").hidden = true;
+        document.getElementById("invitedHelp").hidden = false;
+        document.getElementById("botType").disabled = true;
+        document.getElementById("buttonPlayBot").disabled = true;
+        document.getElementById("buttonCreate").disabled = true;
     }
     ///////////////////////////////////////////////////////
     //message / display functions *********************

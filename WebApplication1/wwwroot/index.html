@@ -87,7 +87,7 @@
     <span><a id="playButton" href="javascript:toPage('playPage')">Game</a></span>&nbsp;|&nbsp;
     <span id="setUpButton" ><strong>Set up</strong></span>&nbsp;|&nbsp;
     <span><a id="rulesButton" href="javascript:window.open('rules.html', '_blank')">Rules</a></span>&nbsp;
-    <span><button id="wButton" onclick="window.open(window.location.href, '_blank')" hidden>W</button></span>
+    <span><button id="wButton" onclick="window.open(window.location.origin, '_blank')" hidden>W</button></span>
     <span><button id="testButton" onclick="doTest()" hidden>T</button></span>
     <div class="row1 col1">
       Name
@@ -130,15 +130,15 @@
     <div class="row4 col1" id="incomingMessage"> </div>
     <div class="row6 col1">
       Welcome to the great game of Racing Demon (also known as Nerts, Pounce and other names).<p></p>
-
-      First enter your Name then <br />
-      
-      1) <strong>Create</strong> a new game (and wait for others to join it) or  <br />
-
-      2) Select a Game and <strong>Join</strong> it or <br />
-
-      3) Select a Bot and <strong>Play It</strong>. <p></p>
-
+      <div id="normalHelp">
+        First enter your Name then <br />
+        1) <strong>Create</strong> a new game (and wait for others to join it) or  <br />
+        2) Select a Game and <strong>Join</strong> it or <br />
+        3) Select a Bot and <strong>Play It</strong>. <p></p>
+      </div>
+      <div id="invitedHelp" hidden>
+        1) Enter your Name then press <strong>Join</strong><p></p>
+      </div>
       May the best player win!
 
     </div>
@@ -149,11 +149,12 @@
     <span id="playButton" ><strong>Game</strong></span>&nbsp;|&nbsp;
     <span><a id="setUpButton" href="javascript:toPage('setUpPage')">Set up</a></span>&nbsp;|&nbsp;
     <span><a id="rulesButton" href="javascript:window.open('rules.html', '_blank')">Rules</a></span>&nbsp;
+    <span><button id="inviteButton" onclick="uGroups.invite()">Invite</button></span>
     <span><button id="startButton" onclick="table.startGame()" disabled>Start</button></span>
     <span><button id="outButton" onclick="racingDemon.out()" disabled>Out</button></span>
     <span><button id="tidyButton" onclick="XXXXXXXX" disabled>Tidy up</button></span>
 
-    <span><button id="wButton2" onclick="window.open(window.location.href, '_blank')" hidden>W</button></span>
+    <span><button id="wButton2" onclick="window.open(window.location.origin, '_blank')" hidden>W</button></span>
     <span><button id="testButton2" onclick="doTest()" hidden>T</button></span>
     <br />
     <canvas id="myCanvas" width="200" height="200" 
