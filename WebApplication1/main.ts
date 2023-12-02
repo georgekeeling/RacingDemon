@@ -17,6 +17,7 @@ var bot = new Bot;
 
 function toPage(target) {
   document.getElementById("playPage").hidden = true;
+  // in my test branch
   document.getElementById("setUpPage").hidden = true;
   document.getElementById(target).hidden = false;
 }
