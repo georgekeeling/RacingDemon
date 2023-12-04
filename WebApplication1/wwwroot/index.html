@@ -101,15 +101,15 @@
       </label>
     </div>
     <div class="row2 col2">
-    <select name="selGame" id="gameList" onchange="uGroups.selGameChange()">
+    <select name="selGame" id="gameList" onchange="uGroups.selGameChange()" tabindex="3">
       <option value="Game2">None</option>
     </select>
     </div>
     <div class="row2 col3">
-      <button id="buttonJoin" onclick="uGroups.joinGame()" disabled tabindex="3">Join</button>
+      <button id="buttonJoin" onclick="uGroups.joinGame()" disabled tabindex="4">Join</button>
     </div>
     <div class="row2 col4">
-      <button id="buttonCreate" onclick="uGroups.createGame()" disabled tabindex="4">Create</button>
+      <button id="buttonCreate" onclick="uGroups.createGame()" disabled tabindex="5">Create</button>
     </div>
     <div class="row3 col1">
       <label for="botType">
@@ -117,7 +117,7 @@
       </label>
     </div>
     <div class="row3 col2">
-    <select id="botType" onchange="bot.setType()">
+    <select id="botType" onchange="bot.setType()" tabindex="6">
       <option value="0">-</option>
       <option value="1">Slow Bot</option>
       <option value="2">Medium Bot</option>
@@ -125,7 +125,7 @@
     </select>
     </div>
     <div class="row3 col3">
-      <button id="buttonPlayBot" onclick="uGroups.playBot()" disabled tabindex="5">Play It</button>
+      <button id="buttonPlayBot" onclick="uGroups.playBot()" disabled tabindex="7">Play It</button>
     </div>
     <div class="row4 col1" id="incomingMessage"> </div>
     <div class="row6 col1">
@@ -134,7 +134,7 @@
         First enter your Name then <br />
         1) <strong>Create</strong> a new game (and wait for others to join it) or  <br />
         2) Select a Game and <strong>Join</strong> it or <br />
-        3) Select a Bot and <strong>Play It</strong>. (Best if pop-ups allowed.) <p></p>
+        3) Select a Bot and <strong>Play It</strong>. (Works best if pop-ups allowed.) <p></p>
       </div>
       <div id="invitedHelp" hidden>
         1) Enter your Name then press <strong>Join</strong><p></p>

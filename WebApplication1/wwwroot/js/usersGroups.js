@@ -241,7 +241,13 @@ class UGroups {
         document.getElementById("buttonPlayBot").disabled = true;
         this.playerName = this.botName;
         this.createGame2();
-        window.open(window.location.href + "?&joinBot&" + this.botName + "&" + this.humanName, '_blank');
+        let newWin = window.open(window.location.href + "?&joinBot&" + this.botName + "&"
+            + this.humanName, '_blank');
+        if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
+            //POPUP BLOCKED
+            // https://stackoverflow.com/questions/2914/how-can-i-detect-if-a-browser-is-blocking-a-popup
+            alert("Pop-ups blocked. Unable to open page for " + this.humanName + ".");
+        }
         // will end up in new window at parseURL () then finishPlayBot()
     }
     parseURL() {
