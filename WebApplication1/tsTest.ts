@@ -1,10 +1,38 @@
 ﻿"use strict";
 // (c) George Arthur Keeling, Berlin 2023
 function doTest() {
-  (document.getElementById("userName") as HTMLInputElement).focus();
+  testClibboard();
   // endGame(15);
 }
 //var doTest = 1;
+function testClibboard() {
+  let inviteURL = window.location.origin + "/?&invite&" + uGroups.myGroup;
+  //alert("typeof (navigator.clipboard) = " + typeof (navigator.clipboard));
+  //alert("typeof (navigator.clipboard.writeText) = " + typeof (navigator.clipboard.writeText));
+  if (typeof (navigator.clipboard) == 'undefined') {
+    let element = document.getElementById("inviteURL") as HTMLDivElement;
+    element.textContent = inviteURL;
+    element.hidden = false;
+    setTimeout(hideMessage, 10000);
+  } else {
+    // navigator.clipboard available only in secure contexts (HTTPS)
+    // https://developer.mozilla.org/en-US/docs/Web/API/Clipboard 
+    navigator.clipboard.writeText(inviteURL);
+    table.writeCentralBiggish("Invite copied to clipboard");
+  }
+}
+
+function testcp2() {
+  let inviteURL = window.location.origin + "/?&invite&" + uGroups.myGroup;
+  let element = document.getElementById("inviteURL") as HTMLDivElement;
+  element.textContent = inviteURL;
+  element.hidden = false;
+  setTimeout(hideMessage, 10000);
+}
+function hideMessage() {
+  let element = document.getElementById("inviteURL") as HTMLDivElement;
+  element.hidden = true;
+}
 function toggleBot() {
   const elemSel = document.getElementById("botType") as HTMLSelectElement;
   if (bot.speed == 0) {

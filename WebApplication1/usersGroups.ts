@@ -311,6 +311,8 @@ class UGroups {
     // copy invite to clip board
     let myLoc = window.location;
     navigator.clipboard.writeText(myLoc.origin + "/?&invite&" + this.myGroup);
+    // navigator.clipboard available only in secure contexts (HTTPS)
+    // https://developer.mozilla.org/en-US/docs/Web/API/Clipboard 
     table.writeCentralBiggish("Invite copied to clipboard");
   }
 
