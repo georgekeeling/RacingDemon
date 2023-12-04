@@ -6,12 +6,13 @@ function doTest() {
 }
 //var doTest = 1;
 function testClibboard() {
+    let testing = true;
     let inviteURL = window.location.origin + "/?&invite&" + uGroups.myGroup;
     //alert("typeof (navigator.clipboard) = " + typeof (navigator.clipboard));
     //alert("typeof (navigator.clipboard.writeText) = " + typeof (navigator.clipboard.writeText));
-    if (typeof (navigator.clipboard) == 'undefined') {
+    if (typeof (navigator.clipboard) == 'undefined' || testing) {
         let element = document.getElementById("inviteURL");
-        element.textContent = inviteURL;
+        element.innerHTML = "Invite: <strong>" + inviteURL + "</strong>";
         element.hidden = false;
         setTimeout(hideMessage, 10000);
     }

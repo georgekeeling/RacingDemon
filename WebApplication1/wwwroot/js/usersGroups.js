@@ -288,12 +288,24 @@ class UGroups {
         return gameI;
     }
     invite() {
-        // copy invite to clip board
-        let myLoc = window.location;
-        navigator.clipboard.writeText(myLoc.origin + "/?&invite&" + this.myGroup);
-        // navigator.clipboard available only in secure contexts (HTTPS)
-        // https://developer.mozilla.org/en-US/docs/Web/API/Clipboard 
-        table.writeCentralBiggish("Invite copied to clipboard");
+        // copy invite to clip board, if possible
+        let inviteURL = window.location.origin + "/?&invite&" + uGroups.myGroup;
+        if (typeof (navigator.clipboard) == 'undefined') {
+            let element = document.getElementById("inviteURL");
+            element.innerHTML = "Invite: <strong>" + inviteURL + "</strong>";
+            element.hidden = false;
+            setTimeout(this.hideInvite, 10000);
+        }
+        else {
+            // navigator.clipboard available only in secure contexts (HTTPS)
+            // https://developer.mozilla.org/en-US/docs/Web/API/Clipboard 
+            navigator.clipboard.writeText(inviteURL);
+            table.writeCentralBiggish("Invite copied to clipboard");
+        }
+    }
+    hideInvite() {
+        let element = document.getElementById("inviteURL");
+        element.hidden = true;
     }
     acceptInvite(toGame) {
         let gameI = this.findGameAndSelect(toGame);
