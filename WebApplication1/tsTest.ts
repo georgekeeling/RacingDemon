@@ -1,10 +1,20 @@
 ﻿"use strict";
 // (c) George Arthur Keeling, Berlin 2023
 function doTest() {
-  testClibboard();
+  testLogging();
   // endGame(15);
 }
 //var doTest = 1;
+function testLogging() {
+  send("GetLogs");
+}
+connection.on("TheLogs", function (theLogs: string) {
+  document.getElementById("normalHelp").hidden = true;
+  let element = document.getElementById("invitedHelp") as HTMLDivElement;
+  element.hidden = false;
+  element.innerHTML = theLogs;
+});
+
 function testClibboard() {
   let testing = true;
   let inviteURL = window.location.origin + "/?&invite&" + uGroups.myGroup;

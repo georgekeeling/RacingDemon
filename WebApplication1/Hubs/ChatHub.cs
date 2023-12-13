@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.SignalR;
 using RacingDemon;
+using System.Timers;
 
 // signalr
 // https://learn.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-7.0
@@ -167,6 +168,7 @@ namespace SignalRChat.Hubs
         }
       }
       Users.Add(new User(playerName, cID, ""));
+      Gls.logs.Add(new Log("Added " + playerName));
       await Clients.Caller.SendAsync("NameOK");
       SRconsole("Num users = " + Users.Count);
     }
@@ -184,6 +186,7 @@ namespace SignalRChat.Hubs
         }
       }
       Users.Add(new User(playerName, cID, ""));
+      Gls.logs.Add(new Log("Added " + playerName));
       await Clients.Caller.SendAsync("NameOK2");
       SRconsole("Num users = " + Users.Count);
     }
@@ -399,6 +402,15 @@ namespace SignalRChat.Hubs
     public async Task ReadyToScore(string groupName)
     {
       await Clients.Group(groupName).SendAsync("ReadyToScore");
+    }
+    public async Task GetLogs()
+    {
+      string theLogs = "";
+      for (int i = 0; i < Gls.logs.Count; i++)
+      {
+        theLogs += Gls.logs[i].dateTime + " " + Gls.logs[i].message + "<br/>";
+      }
+      await Clients.Caller.SendAsync("TheLogs", theLogs);
     }
     // ******************************
     // diagnostic functions

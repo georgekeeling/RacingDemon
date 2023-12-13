@@ -1,5 +1,8 @@
 ﻿// (c) George Arthur Keeling, Berlin 2023
 
+using System.Globalization;
+using System.Timers;
+
 namespace RacingDemon
 {
 // How to use Global Variables in C#?
@@ -25,8 +28,52 @@ namespace RacingDemon
 
     public static List<User> users = new();
     public static List<Game> games= new();
+    public static List<Log> logs = new();
+    public static List<Spacer> spacers = new();
   }
-
+  public class Log
+  {
+    public string dateTime;
+    public string message;
+    private static System.Timers.Timer aTimer;
+    public Log(string message)
+    {
+      // https://learn.microsoft.com/en-us/dotnet/api/system.datetime.now?view=net-8.0
+      DateTime utcDate = DateTime.UtcNow;
+      var culture = new CultureInfo("en-GB");
+      this.dateTime = utcDate.ToString(culture);
+      this.message = message;
+      // first log creates timer to keep us alive longer than 20 minutes. See
+      // https://learn.microsoft.com/en-us/dotnet/api/system.timers.timer?view=net-8.0
+      if (aTimer == null)
+      {
+        aTimer = new System.Timers.Timer(1000 * 60 * 6);   // every 6 minutes
+        aTimer.Elapsed += OnTimedEvent;
+        aTimer.AutoReset = true;    // raises timer repeatedly
+        aTimer.Enabled = true;
+      }
+    }
+    private static void OnTimedEvent(Object source, ElapsedEventArgs e)
+    {
+      System.Diagnostics.Debug.WriteLine(">>> Timer at {0:HH:mm:ss.fff}", e.SignalTime);    // does nothing on server
+      if (Gls.spacers.Count > 10)
+      {
+        Gls.spacers.Clear();
+        Gls.logs.Add(new Log("Cleared spacer " + e.SignalTime.ToString()));
+      }
+      Gls.spacers.Add(new Spacer());
+    }
+  }
+  public class Spacer
+  {
+    int[] myArray = new int[100];
+    public Spacer() { 
+      for (int i = 0; i< myArray.Length; i++)
+      {
+        myArray[i] = i + 1;
+      }
+    }
+  }
   public class User
   {
     public string Name { get; set; }
