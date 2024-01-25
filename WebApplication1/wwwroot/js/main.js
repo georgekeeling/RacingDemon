@@ -14,6 +14,7 @@ var dragPile; // will be set to pile[dragPileI]
 var mouse = new Mouse;
 var uGroups;
 var bot = new Bot;
+console.log("main, root: created mouse,bot");
 function toPage(target) {
     document.getElementById("playPage").hidden = true;
     // in my test branch
@@ -32,5 +33,6 @@ function Initialise() {
     pack = new Pack();
     sound = new Sound();
     uGroups = new UGroups;
+    console.log("main, Initialise: created racingDemon,bot, table .. uGroups");
 }
 //# sourceMappingURL=main.js.map

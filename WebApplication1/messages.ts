@@ -2,7 +2,8 @@
 // (c) George Arthur Keeling, Berlin 2023
 
 // handles messages out (a simplification) and
-// messages in and calls the proper function ASAP (unless it's trivial)
+// sets up messages in to call the proper function (or do whatever, if trivial)
+// there is only one trivial case: for Console message
 
 
 /** invokes a hub method (sends a message to the server)
@@ -25,7 +26,8 @@ function sendGroup(methodName: string, ...args: any[]){
   });
 }
 // ********************
-// User and groups(set up)
+console.log("messages, root: connection.on() × 22");
+// User and group messages (set up)
 connection.on("GroupList", function (gList: Group[]) {
   uGroups.GroupList(gList)
 });
@@ -61,7 +63,7 @@ connection.on("NameError2", function () {
 });
 
 // ******************
-// others - playing the game
+// other messages - playing the game
 connection.on("RequestPiles", function () {
   for (let pileI = racingDemon.playerI * RDhomePiles;
       pileI < racingDemon.playerI * RDhomePiles + RDhomePiles; pileI++) {

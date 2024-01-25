@@ -29,9 +29,9 @@ class UGroups {
   }
 
   TellMeGroups() {
-    // called when website launched from cgat.js
+    // called when website launched from chat.js
     this.groups = [];
-    console.log("TellMeGroups");
+    console.log("userGroups, TellMeGroups");
     send("TellMeGroups");
   }
 

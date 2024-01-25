@@ -29,9 +29,11 @@ var connection = new signalR.HubConnectionBuilder()
     .withUrl("/chatHub")
     .configureLogging(new MyLogger())
     .build();
+console.log("chat, root: created connection, connection.start invoked");
 // Disable create button until connection on
 document.getElementById("buttonCreate").disabled = true;
 connection.start().then(function () {
+    console.log("chat, start.then(func)");
     document.getElementById("buttonCreate").disabled = false;
     // sometimes we get here before TellMeGroups in userGroups is loaded.
     // Have seen it failing "1 times", but then its OK
