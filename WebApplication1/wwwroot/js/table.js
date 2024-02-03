@@ -1131,13 +1131,15 @@ class Table {
                     sound.saySteady();
                     break;
                 case 1:
-                    topRSGarea = table.writeCentralBigRandomFont("Go!");
                     sound.sayGo();
                     document.getElementById("tidyButton").disabled = true;
                     table.startGame3();
                     table.showCards(); // clears messy table
-                    clearInterval(id);
+                    topRSGarea = table.writeCentralBigRandomFont("Go!");
                     break;
+                case 0:
+                    table.showCards(); // remove go
+                    clearInterval(id);
             }
         }
     }
