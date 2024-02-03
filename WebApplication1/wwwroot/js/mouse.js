@@ -47,6 +47,7 @@ class Mouse {
         document.body.addEventListener("keydown", this.keyPress); // keypress must be on body element
     }
     keyPress(event) {
+        return;
         if (event.keyCode == 27) {
             debugger; // escape key launches debugger
         }
@@ -65,6 +66,7 @@ class Mouse {
         mouse.keyPressed = -1;
     }
     down(message) {
+        restoreGlobals(0); // mouse actions must be from real player
         if (table.isLocked() || racingDemon.gameState != GameState.Playing) {
             return;
         }
@@ -72,18 +74,21 @@ class Mouse {
         mouse.down1(message.offsetX, message.offsetY);
     }
     up(message) {
+        restoreGlobals(0);
         if (table.isLocked() || racingDemon.gameState != GameState.Playing) {
             return;
         }
         mouse.up1(message.offsetX, message.offsetY);
     }
     move(message) {
+        restoreGlobals(0);
         if (table.isLocked() || racingDemon.gameState != GameState.Playing) {
             return;
         }
         mouse.move1(message.offsetX, message.offsetY);
     }
     tStart(message) {
+        restoreGlobals(0);
         if (table.isLocked() || racingDemon.gameState != GameState.Playing) {
             return;
         }
@@ -92,6 +97,7 @@ class Mouse {
         mouse.down1(mouseX, mouseY);
     }
     tMove(message) {
+        restoreGlobals(0);
         if (table.isLocked() || racingDemon.gameState != GameState.Playing) {
             return;
         }
@@ -100,6 +106,7 @@ class Mouse {
         mouse.move1(mouseX, mouseY);
     }
     tEnd(message) {
+        restoreGlobals(0);
         if (table.isLocked() || racingDemon.gameState != GameState.Playing) {
             return;
         }

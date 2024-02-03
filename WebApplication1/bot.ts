@@ -4,7 +4,12 @@
 class Bot {
   // class for all things bot
   speed = 0;      // 0 = human, 1 = slow bot, 3 = fast bot
-  functionId = 0;     // impossible id https://developer.mozilla.org/en-US/docs/Web/API/setInterval
+  name = "";
+  createStage = 0;    // 0, not creating bot, 1 creating user who wants a bot,
+                      // 2 creating bot. 4 created
+  active = false;     // when true, no canvas updates will occur
+                      // except via messaging on other players canvas
+  sentPlayerIsOut = false;
   stackedWasteSuccess = 0;
   stackedWasteFailed = 0;
   repeatCount = 0;
@@ -21,95 +26,103 @@ class Bot {
     }
     let speed = Number(elemSel.value);
     if (speed != this.speed) {
-      if (this.functionId != 0) {
-        clearInterval(this.functionId);
-      }
       this.speed = speed;
       if (speed != 0) {
-        sound.playDingBot();     // prevents hiden window from geing throttled. See d2023-08-24 slow bot
         elemPlayBot.disabled = false;
       } else {
         elemPlayBot.disabled = true;
-        sound.pauseDingBot();
-      }
-      switch (speed) {
-        case 1:
-          this.functionId = setInterval(this.doSomething, 5000);
-          break;
-        case 2:
-          this.functionId = setInterval(this.doSomething, 2000);
-          break;
-        case 3:
-          this.functionId = setInterval(this.doSomething, 1000);
-          break;
       }
     }
   }
 
-  doSomething() {
-    if (typeof (dragPile) == 'undefined') {
-      console.log("bot: dragPile 'undefined'");
-      return;
-    }
-    if (dragPile.cards.length > 0) {
-      // must be busy like in sorting 
-      console.log("bot: dragPile.cards.length = " + dragPile.cards.length);
-      return;
+  launchBot() {
+    const myConID = connection.connectionId;
+    switch (this.speed) {
+      case 1:
+        setInterval(doSomething, 5000);
+        break;
+      case 2:
+        setInterval(doSomething, 2000);
+        break;
+      case 3:
+        setInterval(doSomething, 1000);
+        break;
     }
 
-    if ((document.getElementById("outButton") as HTMLButtonElement).disabled == false) {
-      racingDemon.out();
-      return;
-    }
-    if ((document.getElementById("startButton") as HTMLButtonElement).disabled == false) {
-      // restart if round / game ended or if 4 players present (and totally new game can commence)
-      if (racingDemon.gameState == GameState.ShowingScores || racingDemon.gameState == GameState.GameOver) {
-        bot.startGameInAminute();
+    function doSomething() {
+      restoreGlobals(myConID);
+      if (typeof (dragPile) == 'undefined') {
+        console.log("bot: dragPile 'undefined'");
         return;
       }
-      if (racingDemon.players.length == 4) {
-        bot.startGameInAminute();
+      if (dragPile.cards.length > 0) {
+        // must be busy like in sorting 
+        console.log("bot: dragPile.cards.length = " + dragPile.cards.length);
         return;
       }
-      return; // do nothing 
-    }
 
-    if (racingDemon.gameState != GameState.Playing) {
-      return;
-    }
-
-    console.log("bot" + racingDemon.playerI + ": sw s/f " + bot.stackedWasteSuccess + " / " + bot.stackedWasteFailed);
-    if (bot.playToCommon()) {
-      bot.repeatCount = 0;
-      return;
-    }
-    if (bot.moveDemonToWork()) {
-      bot.repeatCount = 0;
-      return;
-    }
-    if (bot.stackWork()) {
-      bot.repeatCount = 0;
-      return;
-    }
-    if (bot.repeatCount >= 2) {
-      // seem to be stuck: Try moving card from waste to work pile
-      console.log("bot: special measures");
-      if (bot.stackFromWaste()) {
+      if (racingDemon.emptyDemon() && !bot.sentPlayerIsOut) {
+        bot.sentPlayerIsOut = true;     // Must only send once !
+        console.log("bot sending PlayerIsOut");
+        sendGroup("PlayerIsOut", bot.name);
+        // racingDemon.out(); cannot use that because it would use plaer's name not bot's
         return;
       }
-    }
+      if ((document.getElementById("startButton") as HTMLButtonElement).disabled == false) {
+        // restart if round / game ended or if 4 players present (and totally new game can commence)
+        if (racingDemon.gameState == GameState.ShowingScores || racingDemon.gameState == GameState.GameOver) {
+          bot.startGameInAminute();
+          return;
+        }
+        if (racingDemon.players.length == 4) {
+          bot.startGameInAminute();
+          return;
+        }
+        return; // do nothing 
+      }
 
-    bot.turnOverStock();
+      if (racingDemon.gameState != GameState.Playing) {
+        return;
+      }
+
+      console.log("bot" + racingDemon.playerI + ": sw s/f " + bot.stackedWasteSuccess + " / " + bot.stackedWasteFailed);
+      if (bot.playToCommon()) {
+        bot.repeatCount = 0;
+        return;
+      }
+      if (bot.moveDemonToWork()) {
+        bot.repeatCount = 0;
+        return;
+      }
+      if (bot.stackWork()) {
+        bot.repeatCount = 0;
+        return;
+      }
+      if (bot.repeatCount >= 2) {
+        // seem to be stuck: Try moving card from waste to work pile
+        console.log("bot: special measures");
+        if (bot.stackFromWaste()) {
+          return;
+        }
+      }
+
+      bot.turnOverStock();
+    }
   }
+
 
   startGameInAminute(): void {
-    // ready to start game, wait half a minute to view scores, 
+    // ready to start game, wait half a minute to view scores,
     // In the meantime other player may press start
-    setTimeout(bot.reallyStart, 30000);
-  }
-  reallyStart(): void {
-    if ((document.getElementById("startButton") as HTMLButtonElement).disabled == false) {
-      table.startGame();
+    const myConID = connection.connectionId;
+    setTimeout(reallyStart, 30000);
+
+    function reallyStart(): void {
+      restoreGlobals(myConID);
+      if (racingDemon.gameState != GameState.Playing)
+      {
+        table.startGame();
+      }
     }
   }
 
@@ -311,9 +324,11 @@ class Bot {
     const dY = sideY / moves;
     mouse.down1(fromX, fromY);
     mouse.move1(fromX, fromY);
+    const myConID = connection.connectionId;
     const funcId = setInterval(moveIt, 200);
 
     function moveIt() {
+      restoreGlobals(myConID);
       if (moves == -2) {
         mouse.up1(toX, toY);
         clearInterval(funcId);

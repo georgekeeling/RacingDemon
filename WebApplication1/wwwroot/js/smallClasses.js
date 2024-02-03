@@ -13,9 +13,9 @@ class Sound {
         this.go = document.getElementById("audioGo");
         this.tick1 = document.getElementById("audioTick1");
         this.ding = document.getElementById("audioDing");
-        this.dingBot = document.getElementById("audioDing");
-        // must have different objects for different volumes of dings. 
+        // must have different objects for different volumes of dings.
         // See bug 11/11/23 bot bell sound increases after “Press Start ?” bell sounds.
+        // no longer relevant since new bot introduce Jan 2024
         this.volume = 0.05;
         if (table.siteWindow.realMobile()) {
             this.volume = 1;
@@ -60,20 +60,6 @@ class Sound {
         }
         this.ding.volume = volume;
         this.ding.play();
-        if (bot.speed > 0) {
-            // gets back to correct volume
-            this.playDingBot();
-            // See bug 11/11/23 bot bell sound increases after “Press Start ?” bell sounds.
-        }
-    }
-    playDingBot() {
-        this.dingBot.autoplay = true;
-        this.dingBot.loop = true;
-        this.dingBot.volume = 0.02; // 0.01 is too low. Bot gets throttled
-        this.dingBot.play();
-    }
-    pauseDingBot() {
-        this.dingBot.pause();
     }
 }
 //# sourceMappingURL=smallClasses.js.map

@@ -6,7 +6,22 @@ body {
 }
 
 button {
-    font-size: 14px;
+  font-size: 14px;
+}
+
+.butPage {
+  /* button that changes page / tab: https://www.w3schools.com/howto/howto_css_round_buttons.asp */
+  cursor: pointer;
+  border-radius: 0px;
+  border: none;
+  background-color: black;
+  color: white;
+}
+
+.butPageSpan {
+  /* span that contains butpages. Want background all same */
+  height: 20px;
+  background-color: darkgrey;
 }
 
 select, option, input[type=text], input[type=password] {

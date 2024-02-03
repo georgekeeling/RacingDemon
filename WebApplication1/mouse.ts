@@ -50,6 +50,7 @@ class Mouse {
   }
 
   keyPress(event) {
+    return;
     if (event.keyCode == 27) {
       debugger;     // escape key launches debugger
     }
@@ -65,22 +66,26 @@ class Mouse {
   }
 
   down(message) {
+    restoreGlobals(0);  // mouse actions must be from real player
     if (table.isLocked() || racingDemon.gameState != GameState.Playing) { return }
     // just note that mouse is down. Drag may start if mouse moves while it is down
     mouse.down1(message.offsetX, message.offsetY);
   }
 
   up(message) {
+    restoreGlobals(0);
     if (table.isLocked() || racingDemon.gameState != GameState.Playing) { return }
     mouse.up1(message.offsetX, message.offsetY);
   }
 
   move(message) {
+    restoreGlobals(0);
     if (table.isLocked() || racingDemon.gameState != GameState.Playing) { return }
     mouse.move1(message.offsetX, message.offsetY);
   }
 
   tStart(message) {
+    restoreGlobals(0);
     if (table.isLocked() || racingDemon.gameState != GameState.Playing) { return }
     let mouseX = message.touches[0].clientX - message.touches[0].target.offsetLeft;
     let mouseY = message.touches[0].clientY - message.touches[0].target.offsetTop;
@@ -88,6 +93,7 @@ class Mouse {
   }
 
   tMove(message) {
+    restoreGlobals(0);
     if (table.isLocked() || racingDemon.gameState != GameState.Playing) { return }
     let mouseX = message.touches[0].clientX - message.touches[0].target.offsetLeft;
     let mouseY = message.touches[0].clientY - message.touches[0].target.offsetTop;
@@ -95,6 +101,7 @@ class Mouse {
   }
 
   tEnd(message) {
+    restoreGlobals(0);
     if (table.isLocked() || racingDemon.gameState != GameState.Playing) { return }
     mouse.up1(mouse.x, mouse.y);
   }

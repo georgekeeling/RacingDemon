@@ -170,8 +170,10 @@ class RacingDemon {
         return DropAnswer.no;
     }
     outReminder() {
+        const myConID = connection.connectionId;
         const id = setInterval(pressOutQ, 10000); // writeTip message cleared after 5000 ms
         function pressOutQ() {
+            restoreGlobals(myConID);
             if (racingDemon.gameState != GameState.Playing) {
                 clearInterval(id);
                 return;
@@ -180,11 +182,15 @@ class RacingDemon {
             sound.soundDing();
         }
     }
+    emptyDemon() {
+        if (table.piles[this.stockPileI + 2].cards.length == 0) {
+            return true;
+        }
+        return false;
+    }
     dragSuccess() {
         // drag pile moved to target pile by server. So not much to do here. 
-        const demonPileI = this.stockPileI + 2;
-        const demonPile = table.piles[demonPileI];
-        if (demonPile.cards.length == 0) {
+        if (this.emptyDemon() && !bot.active) {
             document.getElementById("outButton").disabled = false;
             this.outReminder();
         }
@@ -340,8 +346,10 @@ class RacingDemon {
         this.readyToScoreN = 0; // ditto
         table.lock("actionsAfterOut");
         const timerID = setInterval(nextStep, 500); // was 500
+        const myConID = connection.connectionId;
         nextStep(); // Get one step out the way immediately
         function nextStep() {
+            restoreGlobals(myConID);
             if (mouse.dragging) {
                 mouse.dragAbort(1);
                 return;
@@ -577,9 +585,11 @@ class RacingDemon {
         }
         racingDemon.otherPlayerLeft = true;
         const timerID = setInterval(flashDeserter, 500);
+        const myConID = connection.connectionId;
         table.lock("playerDeparted");
         flashDeserter();
         function flashDeserter() {
+            restoreGlobals(myConID);
             flashes--;
             if (flashes % 2 == 1) {
                 table.clearCentralBiggish(message);
@@ -630,6 +640,7 @@ class RacingDemon {
         this.readyToScoreN = 0; // ditto
         this.readyToDanceN = 0; // ditto
         this.otherPlayerLeft = false;
+        bot.sentPlayerIsOut = false;
         table.piles = [];
         pack.doShuffle(1);
         for (let pileI = 0; pileI < RDflyPile0 + RDmaxPlayers; pileI++) {
@@ -637,6 +648,7 @@ class RacingDemon {
         }
         dragPileI = RDflyPile0 + this.playerI;
         dragPile = table.piles[dragPileI];
+        saveGlobals(connection.connectionId);
         // set coordinates of stock, waste, demon, work piles for this player, others will broadcast into us
         let pileI = this.playerI * RDhomePiles;
         if (table.commonArea.bottom != table.height - table.cardHeight * 1.6) {

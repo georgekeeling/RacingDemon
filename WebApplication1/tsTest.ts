@@ -1,39 +1,78 @@
 ﻿"use strict";
 // (c) George Arthur Keeling, Berlin 2023
 function doTest() {
-  testClibboard();
-  // endGame(15);
+  endGame(15);
 }
 //var doTest = 1;
-function testClibboard() {
-  let testing = true;
-  let inviteURL = window.location.origin + "/?&invite&" + uGroups.myGroup;
-  //alert("typeof (navigator.clipboard) = " + typeof (navigator.clipboard));
-  //alert("typeof (navigator.clipboard.writeText) = " + typeof (navigator.clipboard.writeText));
-  if (typeof (navigator.clipboard) == 'undefined' || testing) {
-    let element = document.getElementById("inviteURL") as HTMLDivElement;
-    element.innerHTML = "Invite: <strong>" + inviteURL + "</strong>";
-    element.hidden = false;
-    setTimeout(hideMessage, 10000);
-  } else {
-    // navigator.clipboard available only in secure contexts (HTTPS)
-    // https://developer.mozilla.org/en-US/docs/Web/API/Clipboard 
-    navigator.clipboard.writeText(inviteURL);
-    table.writeCentralBiggish("Invite copied to clipboard");
-  }
+function testSetTimeOut() {
+
 }
 
-function testcp2() {
-  let inviteURL = window.location.origin + "/?&invite&" + uGroups.myGroup;
-  let element = document.getElementById("inviteURL") as HTMLDivElement;
-  element.textContent = inviteURL;
-  element.hidden = false;
-  setTimeout(hideMessage, 10000);
+var chooser = 1;
+var con0id: string;
+var con1id: string;
+var con2id: string;
+function testGlobals(): void {
+  // test if startAny, addGlSaver, restoreGlobals works
+  // Need breakpoints to inspect data at various points
+  switch (chooser++) {
+    case 1:
+      console.log("testGlobals, case 1");
+      con0id = connection.connectionId;
+      createGlobals();
+      connection = startAny(myNewConn1);
+      table.lockLevel = 1;
+      declareMessages();
+      addGlSaver();
+      break;
+    case 2:
+      console.log("testGlobals, case 2");
+      createGlobals();
+      connection = startAny(myNewConn2);
+      table.lockLevel = 2;
+      declareMessages();
+      addGlSaver();
+      restoreGlobals(0);      // simulate message to other connection
+      break;
+    case 3:
+      // test 3, structure of setTimeout connection handling
+      restoreGlobals(0);
+      uGroups.errorMessage("This is a test");
+      restoreGlobals(1);
+      return;
+      // test 2, ping test gets correct connection on reply
+      restoreGlobals(con1id);
+      console.log("ping from " + connection.connectionId);
+      send("Ping", "ping from con1, id = " + con1id);
+      restoreGlobals(0);    // simulates user action on mouse for example
+      console.log("connection now " + connection.connectionId);
+      return;
+      // test 1, restore works by index or connection id
+      console.log("testGlobals, case 3");
+      restoreGlobals(0);
+      restoreGlobals(con2id);
+      restoreGlobals(con1id);
+      restoreGlobals(2);
+      restoreGlobals(con0id);
+      break;
+    default:
+      console.log("testGlobals, default");
+  }
+
 }
-function hideMessage() {
-  let element = document.getElementById("inviteURL") as HTMLDivElement;
-  element.hidden = true;
+function myNewConn1() {
+  restoreGlobals(connectionStarting.connectionId);
+  connectionStarting = null;
+  console.log("new connection started " + connection.connectionId);
+  con1id = connection.connectionId;
 }
+function myNewConn2() {
+  restoreGlobals(connectionStarting.connectionId);
+  connectionStarting = null;
+  console.log("new connection started " + connection.connectionId);
+  con2id = connection.connectionId;
+}
+
 function toggleBot() {
   const elemSel = document.getElementById("botType") as HTMLSelectElement;
   if (bot.speed == 0) {
@@ -193,12 +232,18 @@ function clearCommon() {
 }
 function endGame(cPilesN?: number) {
   // set up cPilesN common piles so that lots of cards on table by random players
+  // must lock all bots while this is happening
+  // !!!! only works no cards have been played
   if (typeof (cPilesN) == 'undefined') {
     cPilesN = 15;
   }
   if (racingDemon.gameState != GameState.Playing) {
     alert("Game must be playing");
     return;
+  }
+
+  for (let playerI = 0; playerI < glSavers.length; playerI++) {
+    glSavers[playerI].table.lock("endGame");     // lock all
   }
   const fcpI = RDhomePiles * RDmaxPlayers;    // first common pileI
   const playersN = racingDemon.players.length;
@@ -229,15 +274,17 @@ function endGame(cPilesN?: number) {
     pile.broadcast(i + fcpI);
 
   }
+  cheatDemon();
+  for (let playerI = 0; playerI < glSavers.length; playerI++) {
+    glSavers[playerI].table.unlock("endGame");     // unlock all
+  }
+}
+function cheatDemon() {
+  // to hurry everything along, reduce demon pile
+  restoreGlobals(1);      // 0 for player's demon, 1 for bot's
   const demonPileI = racingDemon.playerI * RDhomePiles + 2;
   const pile = table.piles[demonPileI];
   pile.cards.length = 3;
-  cheatDemon();
-}
-function cheatDemon() {
-  // to hurry everything along
-  const demonPileI = racingDemon.playerI * RDhomePiles + 2;
-  const pile = table.piles[demonPileI];
   let card52I = 12; // king
   for (let cardI = 0; cardI < pile.cards.length; cardI++) {
     pile.cards[cardI].cards52I = card52I--;
@@ -270,116 +317,12 @@ function pingPile(pileI: number) {
   }
   send("PingPile", bCards);
 }
-connection.on("pingPileBack", function (bCardsBack: Bcard[]) {
-  console.log("pingArrayBack size " + bCardsBack.length);
-});
 
-var soundCount = 0;
-function soundTest() {
-  switch (soundCount) {
-    case 0:
-      sound.playDingBot();
-      break;
-    case 1:
-      sound.sayReady();
-      break;
-    case 2:
-      sound.soundDing();
-      break;
-    default:
-      soundCount = -1;
-  }
-  soundCount++;
-}
-
-const startTimeProg = new Date();
-var startTimeMs = startTimeProg.getTime();
-var milliSeconds: number;
-var TXer = false;
-
-function pseudoBot() {
-  // d2023-08-24 slow bot
-  const startTime = new Date();
-  startTimeMs = startTime.getTime();
-  TXer = true;
-  sound.playDingBot();
-  const funcId = setInterval(pingArray, 1000);
-}
-function pingArray() {
-  const now = new Date();
-  const elapsed = now.getTime() - startTimeMs;
-  const arr1 = [elapsed.toString(), 'c', 'xxx', 'yyyy'];
-  console.log("TX at " + elapsed);
-  sendGroup("PingArray", arr1);
-}
-connection.on("pingArrayBack", function (arrayBack: string[]) {
-  const now = new Date();
-  const elapsed = now.getTime() - startTimeMs;
-  let elapsed2 = arrayBack[0];
-  console.log("RX at " + elapsed + " from " + elapsed2);
-  elapsed2 = elapsed2.substring(0, elapsed2.length - 3);
-  (document.getElementById("incomingMessage") as HTMLDivElement).innerText = elapsed2;
-});
-
-function pseudoBot2() {
-  const startTime = new Date();
-  startTimeMs = startTime.getTime();
-  const funcId = setInterval(logIt, 1000);
-}
-function logIt(){
-  const now = new Date();
-  const elapsed = now.getTime() - startTimeMs;
-  console.log("TX at " + Math.round(elapsed / 1000));
-}
 function broadcastPile(pileI: number) {
   pileI += racingDemon.playerI * 8;
   table.piles[pileI].broadcast(pileI);
 }
 
-function ping() {
-  send("ping", "Hello");
-}
 
-connection.on("pingBack", function (myCID: string) {
-  console.log("pingBack, I am " + myCID);
-  uGroups.infoMessage("pingBack, I am " + myCID);
-});
-
-class TestData {
-  i = 1;
-  s = "hello";
-  r = 1.2;
-  b: boolean;
-  constructor(i: number, s: string, r: number, b:boolean) {
-    this.i = i;
-    this.s = s;
-    this.r = r;
-    this.b = b;
-  }
-}
-var testStartT = new Date();
-// array of  1 took  8 ms
-// array of 40 took 19 ms 
-function pingData() {
-  let test = new TestData(22, "hello world", 1.333, true);
-  let testArray: TestData[] = [];
-  let flipper = true;
-  let numInArray = 1;
-  for (let i = 0; i < numInArray; i++) {
-    testArray[i] = new TestData(i * 10 + 1, "hello world" + i, i * 1.333 + 22, flipper);
-    flipper = !flipper;
-  }
-  testStartT = new Date();
-  send("PingData", 22, testArray);
-}
-
-connection.on("pingDataBack", function (numBack: number, dataBack: TestData[]) {
-  let endT = new Date();
-  console.log(numBack + " " + dataBack.length);
-  console.log("That took " + (endT.getTime() - testStartT.getTime()) + " ms")
-  for (let i = 0; i < dataBack.length; i++) {
-    console.log("data back " + dataBack[i].i + " " + dataBack[i].s + " " + dataBack[i].r + " " + dataBack[i].b);
-  }
-});
 
 

@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<!-- (c) George Arthur Keeling, Berlin 2023-->
+<!-- (c) George Arthur Keeling, Berlin 2023/24-->
 <html>
 <head>
   <meta charset="utf-8" />
@@ -83,12 +83,14 @@
   <audio id="audioDing" src="sounds/ding.mp3"></audio>
 
   </div>
-  <div id="setUpPage"> 
-    <span><a id="playButton" href="javascript:toPage('playPage')">Game</a></span>&nbsp;|&nbsp;
-    <span id="setUpButton" ><strong>Set up</strong></span>&nbsp;|&nbsp;
-    <span><a id="rulesButton" href="javascript:window.open('rules.html', '_blank')">Rules</a></span>&nbsp;
-    <span><button id="wButton" onclick="window.open(window.location.origin, '_blank')" hidden>W</button></span>
-    <span><button id="testButton" onclick="doTest()" hidden>T</button></span>
+  <div id="setUpPage"> <!-- *** Set up page *** -->
+    <span class="butPageSpan">
+    &nbsp;<button id="playButton" class="butPage" onclick="toPage('playPage')" >Game</button>
+    <button id="setUpButton" class="butPage" onclick="toPage('setUpPage')" >Set up</button>
+    <button id="rulesButton" class="butPage" onclick="window.open('rules.html', '_blank')" >Rules ↗</button>
+    <button id="wButton" class="butPage" onclick="window.open(window.location.origin, '_blank')" hidden>W ↗</button>
+    </span>
+    <span>&nbsp;<button id="testButton" onclick="doTest()" hidden>T</button></span>
     <div class="row1 col1">
       Name
     </div>
@@ -101,15 +103,15 @@
       </label>
     </div>
     <div class="row2 col2">
-    <select name="selGame" id="gameList" onchange="uGroups.selGameChange()" tabindex="3">
+    <select name="selGame" id="gameList" onchange="restoreGlobals(0);uGroups.selGameChange()" tabindex="3">
       <option value="Game2">None</option>
     </select>
     </div>
     <div class="row2 col3">
-      <button id="buttonJoin" onclick="uGroups.joinGame()" disabled tabindex="4">Join</button>
+      <button id="buttonJoin" onclick="restoreGlobals(0);uGroups.joinGame()" disabled tabindex="4">Join</button>
     </div>
     <div class="row2 col4">
-      <button id="buttonCreate" onclick="uGroups.createGame()" disabled tabindex="5">Create</button>
+      <button id="buttonCreate" onclick="restoreGlobals(0);uGroups.createGame()" disabled tabindex="5">Create</button>
     </div>
     <div class="row3 col1">
       <label for="botType">
@@ -117,7 +119,7 @@
       </label>
     </div>
     <div class="row3 col2">
-    <select id="botType" onchange="bot.setType()" tabindex="6">
+    <select id="botType" onchange="restoreGlobals(0);bot.setType()" tabindex="6">
       <option value="0">-</option>
       <option value="1">Slow Bot</option>
       <option value="2">Medium Bot</option>
@@ -125,7 +127,7 @@
     </select>
     </div>
     <div class="row3 col3">
-      <button id="buttonPlayBot" onclick="uGroups.playBot()" disabled tabindex="7">Play It</button>
+      <button id="buttonPlayBot" onclick="restoreGlobals(0);uGroups.playBot()" disabled tabindex="7">Play It</button>
     </div>
     <div class="row4 col1" id="incomingMessage"> </div>
     <div class="row6 col1">
@@ -134,7 +136,7 @@
         First enter your Name then <br />
         1) <strong>Create</strong> a new game (and wait for others to join it) or  <br />
         2) Select a Game and <strong>Join</strong> it or <br />
-        3) Select a Bot and <strong>Play It</strong>. (Works best if pop-ups allowed.) <p></p>
+        3) Select a Bot and <strong>Play It</strong>. (Under redevelopment.) <p></p>
       </div>
       <div id="invitedHelp" hidden>
         1) Enter your Name then press <strong>Join</strong><p></p>
@@ -145,28 +147,29 @@
 
   </div>
 
-  <div id="playPage" hidden> 
-    <span id="playButton" ><strong>Game</strong></span>&nbsp;|&nbsp;
-    <span><a id="setUpButton" href="javascript:toPage('setUpPage')">Set up</a></span>&nbsp;|&nbsp;
-    <span><a id="rulesButton" href="javascript:window.open('rules.html', '_blank')">Rules</a></span>&nbsp;
-    <span><button id="inviteButton" onclick="uGroups.invite()">Invite</button></span>
-    <span><button id="startButton" onclick="table.startGame()" disabled>Start</button></span>
-    <span><button id="outButton" onclick="racingDemon.out()" disabled>Out</button></span>
+  <div id="playPage" hidden> <!-- *** Play page *** -->
+    <span class="butPageSpan">&nbsp;<button id="playButton" class="butPage" onclick="toPage('playPage')">Game</button>
+    <button id="setUpButton" class="butPage" onclick="toPage('setUpPage')">Set up</button>
+    <button id="rulesButton" class="butPage" onclick="window.open('rules.html', '_blank')">Rules ↗</button>
+    <button id="wButton2" class="butPage" onclick="window.open(window.location.origin, '_blank')" hidden>W ↗</button></span>
+    
+    <span>&nbsp;<button id="inviteButton" onclick="restoreGlobals(0);uGroups.invite()">Invite</button></span>
+    <span><button id="startButton" onclick="restoreGlobals(0);table.startGame()" disabled>Start</button></span>
+    <span><button id="outButton" onclick="restoreGlobals(0);racingDemon.out()" disabled>Out</button></span>
     <span><button id="tidyButton" onclick="XXXXXXXX" disabled>Tidy up</button></span>
 
-    <span><button id="wButton2" onclick="window.open(window.location.origin, '_blank')" hidden>W</button></span>
     <span><button id="testButton2" onclick="doTest()" hidden>T</button></span>
     <div id="inviteURL" hidden> </div>
     <div>
-      <canvas id="myCanvas" width="200" height="200" 
+      <canvas id="myCanvas" width="200" height="200"
               style="border:1px solid #d3d3d3; background-color:green">
       </canvas>
     </div>
-    <!-- can position canvas with something like 
-      ; position:absolute; left:50px
-      in style=, and then would have to adjust 50px in resize
-      -->
-    
+    <!-- can position canvas with something like
+    ; position:absolute; left:50px
+    in style=, and then would have to adjust 50px in resize
+    -->
+
   </div>
 
   <script src="js/signalr/signalr.js"></script>
@@ -180,6 +183,7 @@
   <script src="js/tsTest.js"></script>
   <script src="js/usersGroups.js"></script>
   <script src="js/bot.js"></script>
+  <script src="js/globalsSaver.js"></script>
   <script src="js/main.js"></script>
 
 </body>

@@ -170,21 +170,21 @@ namespace SignalRChat.Hubs
       await Clients.Caller.SendAsync("NameOK");
       SRconsole("Num users = " + Users.Count);
     }
-    public async Task CheckName2(string playerName)
+    public async Task CheckNameBot(string playerName)
     {
       var cID = Context.ConnectionId;
       var Users = Gls.users;
-      SRconsole("CheckName2 " + playerName);
+      SRconsole("CheckNameBot " + playerName);
       foreach (User theUser in Users)
       {
         if (theUser.Name.ToLower() == playerName.ToLower())
         {
-          await Clients.Caller.SendAsync("NameError2");
+          await Clients.Caller.SendAsync("NameErrorBot");
           return;
         }
       }
       Users.Add(new User(playerName, cID, ""));
-      await Clients.Caller.SendAsync("NameOK2");
+      await Clients.Caller.SendAsync("NameOKBot");
       SRconsole("Num users = " + Users.Count);
     }
 

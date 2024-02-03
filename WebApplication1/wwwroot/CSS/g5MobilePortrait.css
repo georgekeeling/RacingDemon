@@ -9,6 +9,15 @@ button {
     font-size: 30px;
 }
 
+.butPage {
+  /* button that changes page / tab: https://www.w3schools.com/howto/howto_css_round_buttons.asp */
+  cursor: pointer;
+  border-radius: 0px;
+  border: none;
+  background-color: black;
+  color: white;
+}
+
 select, option, input[type=text], input[type=password] {
     font-size: 30px;
 }

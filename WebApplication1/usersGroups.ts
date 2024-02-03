@@ -23,7 +23,6 @@ class UGroups {
   creatingGroup = false;
   webPageStarting = true;
   humanName = "";
-  botName = "";
   constructor() {
     // nothing to do
   }
@@ -38,6 +37,7 @@ class UGroups {
   GroupList(gList: Group[]) {
     // incoming message with list of groups. Requested by TellMeGroups() or 
     // or sent here because a group was added / removed 
+    console.log("userGroups, GroupList");
     this.groups.length = 0;
     for (let i = 0; i < gList.length; i++) {
       this.groups[i] = new Group(gList[i].name, gList[i].players, gList[i].playing,
@@ -52,6 +52,7 @@ class UGroups {
   }
 
   createGame(): void {
+    console.log("userGroups, createGame");
     this.creatingGroup = true;
     this.checkName();
 }
@@ -59,7 +60,7 @@ class UGroups {
   createGame2(): void {
     let bCardLT = new Bcard(0, 0, table.commonArea.left, table.commonArea.top, false, 0);
     bCardLT.coordsForServer();
-    console.log("Create game " + this.playerName);
+    console.log("userGroups,createGame2 player: " + this.playerName);
     // person creating game must be player [0]
     // for unknown reasons this does not appear properly unless we do it here too.
     racingDemon.players[0] = this.playerName;
@@ -69,6 +70,7 @@ class UGroups {
   }
 
   play(gameName: string) {
+    console.log("userGroups, play");
     this.getInGroup(gameName);
     (document.getElementById("buttonPlayBot") as HTMLButtonElement).disabled = true;
     (document.getElementById("botType") as HTMLSelectElement).disabled = true;
@@ -76,6 +78,7 @@ class UGroups {
   }
 
   PlayersInGame(playerNames: string[]) {
+    console.log("userGroups, PlayersInGame");
     racingDemon.players = playerNames.slice();
     if (table.piles.length > 0) {
       table.showCards();    // gets player 1 name on player 0 board
@@ -86,19 +89,36 @@ class UGroups {
   }
 
   PlayerNr(playerNr: number) {
+    // This is where both Join and Create end up if all is successful.
+    // so we call newPlayerDeal to get cards on table
+    console.log("userGroups, PlayerNr");
     racingDemon.newPlayerDeal(playerNr);
     if (racingDemon.players.length > 1) {
       // Not sure why this doesn't happen in PlayersInGame. But it doesn't. So do here
       table.startGameAllowed(true);
     }
+    switch (bot.createStage) {
+      case 0:
+        // normal create / join
+        return;
+      case 1:
+        // creating user that wants bot. That worked so
+        this.playBot2();
+        break;
+      case 2:
+        // creating bot asked for by user
+        break;
+    }
   }
 
   joinGame(): void {
+    console.log("userGroups, joinGame");
     this.creatingGroup = false;
     this.checkName();
   }
 
   joinGame2(): void {
+    console.log("userGroups, joinGame2");
     const element = document.getElementById("gameList") as HTMLSelectElement;
     if (element.innerText == "None") {
       // last remaining group deleted behind my back!
@@ -108,7 +128,7 @@ class UGroups {
     }
     const group = this.groups[Number(element.value)]
     const  groupName = group.name;
-    console.log("Join group " + groupName);
+    console.log("userGroups, joinGame2, group " + groupName);
     if (group.players == RDmaxPlayers || group.playing == true || (group.players == 2 && group.onMobile)) {
       this.infoMessage("Oops, cannot join this game");
       (document.getElementById("buttonJoin") as HTMLButtonElement).disabled = true;
@@ -119,30 +139,36 @@ class UGroups {
   }
 
   JoinGroupRejected(): void {
+    console.log("userGroups, JoinGroupRejected");
     this.infoMessage("Oops, cannot join this game");
     (document.getElementById("buttonJoin") as HTMLButtonElement).disabled = true;
     console.log("server rejected group/game join")
   }
 
   JoinGroupAccepted(): void {
+    console.log("userGroups, JoinGroupAccepted");
     const element = document.getElementById("gameList") as HTMLSelectElement;
     const group = this.groups[Number(element.value)]
     if (group.onMobile) {
       table.changeAspectRatio(group.aspectRatio);
     }
     this.play(group.name);
+    if (bot.createStage == 4) {
+      bot.launchBot();
+    }
   }
 
   getInGroup(groupName: string) {
+    console.log("userGroups, getInGroup");
     (document.getElementById("buttonCreate") as HTMLButtonElement).disabled = true;
-    (document.getElementById("playButton") as HTMLAnchorElement).outerHTML =
-      '<a id="playButton" href="javascript:toPage(\'playPage\')">Game</a>';
+    buttonPageEnable("playButton", true);
     (document.getElementById("buttonJoin") as HTMLButtonElement).disabled = true;
     this.myGroup = groupName;
     this.showGroups();
   }
 
   selGameChange() {
+    console.log("userGroups, selGameChange");
     const elemSel = document.getElementById("gameList") as HTMLSelectElement;
     const group = this.groups[Number(elemSel.value)]
     const elemJoin = document.getElementById("buttonJoin") as HTMLButtonElement;
@@ -164,6 +190,7 @@ class UGroups {
 
   checkNameBasic(name: string): string {
     // Perform basic checks on name. Modify if necessary.
+    console.log("userGroups, checkNameBasic");
     const maxNameL = 10;
     name = name.trim();
     if (name.length > maxNameL) {
@@ -181,7 +208,7 @@ class UGroups {
     let elem_userName = document.getElementById("userName") as HTMLInputElement;
     this.startT = new Date();
     this.playerName = elem_userName.value;
-    console.log("checkName " + this.playerName);
+    console.log("userGroups, checkName " + this.playerName);
     this.playerName = this.checkNameBasic(this.playerName);
     if (this.playerName == "") {
       return;
@@ -193,7 +220,7 @@ class UGroups {
   NameOK() {
     let elem_userName = document.getElementById("userName") as HTMLInputElement;
     let endT = new Date();
-    console.log("NameOK ");
+    console.log("userGroups,NameOK ");
     this.infoMessage("Computer says: Name OK. (" + (endT.getTime() - this.startT.getTime()) + " ms)");
     this.playerName = elem_userName.value;
     elem_userName.readOnly = true;
@@ -206,70 +233,80 @@ class UGroups {
 
   NameError() {
     let endT = new Date();
-    console.log("NameError ");
+    console.log("userGroups, NameError");
     this.errorMessage("Name is in use. (" + (endT.getTime() - this.startT.getTime()) + " ms). Try another.");
     this.playerName = "";
   }
 
   playBot() {
-    // automatically create bot window in a game.
-    // it would also work for sending out invites to game
+    // create bot in a game.
 
-    // 1) create bot & game in this window with generated this.botName, e.g. fBot1, mBot23
-    // 2) open other window with original name from this window and bot name as parameters
-    // 3) create user with original name and join bot game
+    // 1) create game for user, as createGame. If that succeeds:
+    // 2) create bot with botName, e.g.fBot1, mBot23,
+    // 3) create connection and globals for bot
+    // 4) join bot to game created in step 1. As joinGame except no visible window
+    bot.createStage = 1;
+    this.createGame();
+  }
+  playBot2(): void {
+    let prevBot = bot;
+    let saveUGroups = uGroups;
 
-    // code to open sibling window with parameters in URL
-    const elemName = document.getElementById("userName") as HTMLInputElement;
-    this.botName = "";
-    this.humanName = elemName.value;
-    this.humanName = uGroups.checkNameBasic(this.humanName);
-    if (this.humanName == "") {
-      return;
-    }
-    elemName.value = this.humanName;
+    createGlobals();
+    bot.speed = prevBot.speed;
+    bot.name = prevBot.name;
+    prevBot.speed = 0;
+    prevBot.name = "";
+    prevBot.createStage = 0;
 
+    uGroups = saveUGroups; 
+
+    connection = startAny(this.playBot3ConnectionReady);
+    declareMessages();
+    addGlSaver();
+  }
+
+  playBot3ConnectionReady(): void {
+    // for some reason, connection has gone back to original user's connection
+    // it works as expected in testGlobals
+    restoreGlobals(connectionStarting.connectionId);
+    connectionStarting = null;
+    bot.createStage = 3;    // now creating bot
     switch (bot.speed) {
       case 0:
         return;
       case 1:
-        this.botName = "slBot";
+        bot.name = "slBot";
         break;
       case 2:
-        this.botName = "mdBot";
+        bot.name = "mdBot";
         break;
       case 3:
-        this.botName = "faBot";
+        bot.name = "faBot";
         break;
     }
-    send("CheckName2", this.botName);
+    send("CheckNameBot", bot.name);
   }
 
-  NameError2() {
-    if (this.botName.length == 5) {
-      this.botName += "1";
+  NameErrorBot() {
+    if (bot.name.length == 5) {
+      bot.name += "1";
     } else {
-      let part1 = this.botName.slice(0, 5);
-      let part2 = this.botName.slice(5, 22);
-      this.botName = part1 + (Number(part2) + 1)
+      let part1 = bot.name.slice(0, 5);
+      let part2 = bot.name.slice(5, 22);
+      bot.name = part1 + (Number(part2) + 1);
     }
-    send("CheckName2", this.botName);
+    send("CheckNameBot", bot.name);
   }
 
-  NameOK2() {
-    // create game with bot name and launch human in new window
-    (document.getElementById("userName") as HTMLInputElement).value = this.botName;
+  NameOKBot() {
+    // could be called playBot4. 
+    // bot has name and connection. Now join it to game
     (document.getElementById("buttonPlayBot") as HTMLButtonElement ).disabled = true;
-    this.playerName = this.botName;
-    this.createGame2();
-    let newWin = window.open(window.location.href + "?&joinBot&" + this.botName + "&"
-      + this.humanName, '_blank');
-    if (!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
-      //POPUP BLOCKED
-      // https://stackoverflow.com/questions/2914/how-can-i-detect-if-a-browser-is-blocking-a-popup
-      alert("Pop-ups blocked. Unable to open page for " + this.humanName + ".");
-    }
-    // will end up in new window at parseURL () then finishPlayBot()
+    this.creatingGroup = false;
+    bot.active = true;
+    bot.createStage = 4;
+    this.joinGame2();
   }
 
   parseURL() {
@@ -278,8 +315,8 @@ class UGroups {
     const paramArray = myLoc.search.split("&");
     switch (paramArray[1]) {
       case "joinBot":
-        uGroups.finishPlayBot(decodeURIComponent(paramArray[2]), decodeURIComponent(paramArray[3]));
-        break;
+        alert("joinBot in URL deprecatd, userGroups, parseURL");
+        return;
       case "invite":
         this.acceptInvite(decodeURIComponent(paramArray[2]));
         break;
@@ -287,19 +324,7 @@ class UGroups {
       // nothing!
     }
   }
-
-  finishPlayBot(botName: string, playerName: string) {
-    // we want playerName joining group called botName
-    // botName should be in groups list found by TellMeGroups(). TellMeGroups() NOT CALLED YET
-    // find botName in groups list, set game selector accordingly, call uGroups.joinGame()
-    (document.getElementById("userName") as HTMLInputElement).value = playerName;
-    let botGroupI = this.findGameAndSelect(botName);
-    if (botGroupI == -1) {
-      return;   // some error!
-    }
-    this.joinGame();
-  }
-
+  
   findGameAndSelect(game: string): number {
     let gameI = 0;
     while (this.groups[gameI].name != game) {
@@ -315,23 +340,25 @@ class UGroups {
   invite() {
     // copy invite to clip board, if possible
     let inviteURL = window.location.origin + "/?&invite&" + uGroups.myGroup;
+    const myConID = connection.connectionId;
     if (typeof (navigator.clipboard) == 'undefined') {
       let element = document.getElementById("inviteURL") as HTMLDivElement;
       element.innerHTML = "Invite: <strong>" + inviteURL + "</strong>";
       element.hidden = false;
-      setTimeout(this.hideInvite, 10000);
+      setTimeout(hideInvite, 10000);
     } else {
       // navigator.clipboard available only in secure contexts (HTTPS)
       // https://developer.mozilla.org/en-US/docs/Web/API/Clipboard 
       navigator.clipboard.writeText(inviteURL);
       table.writeCentralBiggish("Invite copied to clipboard");
     }
+    function hideInvite() {
+      restoreGlobals(myConID);
+      let element = document.getElementById("inviteURL") as HTMLDivElement;
+      element.hidden = true;
+    }
   }
 
-  hideInvite() {
-    let element = document.getElementById("inviteURL") as HTMLDivElement;
-    element.hidden = true;
-  }
 
   acceptInvite(toGame: string) {
     let gameI = this.findGameAndSelect(toGame);
@@ -406,9 +433,11 @@ class UGroups {
     let saveClass = document.getElementById("incomingMessage").className;
     document.getElementById("incomingMessage").className += " " + color;
     document.getElementById("incomingMessage").innerHTML = "Computer says: " + message;
+    const myConID = connection.connectionId;
     setTimeout(clearError, 5000);
 
     function clearError() {
+      restoreGlobals(myConID);
       document.getElementById("incomingMessage").innerHTML = "";
       document.getElementById("incomingMessage").className = saveClass;
     }

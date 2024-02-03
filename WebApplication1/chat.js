@@ -29,43 +29,22 @@ class MyLogger {
   }
 }
 
-var connection = new signalR.HubConnectionBuilder()
-  .withUrl("/chatHub")
-  .configureLogging(new MyLogger())
-  .build();
-console.log("chat, root: created connection, connection.start invoked");
-
-// Disable create button until connection on
-document.getElementById("buttonCreate").disabled = true;
-
-
-connection.start().then(function () {
-  console.log("chat, start.then(func)");
-  document.getElementById("buttonCreate").disabled = false;
-  // sometimes we get here before TellMeGroups in userGroups is loaded.
-  // Have seen it failing "1 times", but then its OK
-  if (typeof (uGroups) != 'undefined') {
-    uGroups.TellMeGroups();
-  } else {
-    let tries = 1;
-    const id = setInterval(retryTell, 500);
-
-    function retryTell() {
-      console.log("TellMeGroups absent " + tries + " times")
-      if (typeof (uGroups) != 'undefined') {
-        uGroups.TellMeGroups();
-        clearInterval(id);
-        return;
-      }
-      tries++;
-      if (tries > 10) {
-        alert("uGroups.TellMeGroups  absent 10 times");
-        clearInterval(id);
-        return;
-      }
-    }
+// the global connectionStarting is a dreadful bodge so that the onStartFunction can know
+// what connection is being started. (there was a problem in uGroups.playBot3ConnectionReady)
+// Typically the onStartFunction should begin with these two lines:
+// restoreGlobals(connectionStarting.connectionId);
+// connectionStarting = null;
+var connectionStarting = null;
+function startAny(onStartFunction) {
+  if (connectionStarting != null) {
+    alert("Attempt to start 2 connections simultaneously. chat.js");
+    return;
   }
-}).catch(function (err) {
-  return console.error(err.toString());
-});
-
+  connectionStarting = new signalR.HubConnectionBuilder()
+    .withUrl("/chatHub")
+    .configureLogging(new MyLogger())
+    .build();
+  console.log("chat, root: created connection, connection.start invoked");
+  connectionStarting.start().then(onStartFunction);
+  return connectionStarting;
+}

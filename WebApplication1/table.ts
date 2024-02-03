@@ -720,7 +720,8 @@ class Table {
     this.resize1(true);
   }
 
-  writeText(text:  string , x: number, y: number, ifOverlaps?:Area): number {
+  writeText(text: string, x: number, y: number, ifOverlaps?: Area): number {
+    if (bot.active) { return };
     // write text at x,y in cleared rectangle, possibly if overlaps the area
     // textAlign, font face and font size already set
     const descender = this.ctx.measureText("gypHt").actualBoundingBoxDescent;
@@ -736,16 +737,29 @@ class Table {
   }
 
   writeTip(message: string) {
+    if (bot.active) { return };
     if (this.tip != "") {
       return;     // only one tip at a time
     }
     this.tip = message;
     this.writeTip2();
-    setTimeout(this.clearTip, 5000);
+    const myConID = connection.connectionId;
+    setTimeout(clearTip, 5000);
 
+    function clearTip() {
+      // **************** shoulld expamd redraw area to include circles.
+      // this not working here.
+      restoreGlobals(myConID);
+      if (bot.active) { return };
+      table.tip = "";
+      table.circles[0].x = -1;
+      table.circles[1].x = -1;
+      table.showCards(this.tipArea);
+    }
   }
 
   writeTip2() {
+    if (bot.active) { return };
     if (this.tip == "") {
       return;
     }
@@ -758,16 +772,8 @@ class Table {
     this.tipArea.bottom = this.tipArea.top + height;
   }
 
-  clearTip() {
-    // **************** shoulld expamd redraw area to include circles.
-    // this not working here.
-    table.tip = "";
-    table.circles[0].x = -1;
-    table.circles[1].x = -1;
-    table.showCards(this.tipArea);
-  }
-
   drawCircle(pileI: number) {
+    if (bot.active) { return };
     const pile = table.piles[pileI];
     const centreX = pile.x + table.cardWidth / 2;
     const centreY = pile.y + table.cardHeight / 2;
@@ -776,12 +782,14 @@ class Table {
   }
 
   createCircle(circleI: number, pileI: number) {
+    if (bot.active) { return };
     const pile = table.piles[pileI];
     this.circles[circleI].x = pile.x + table.cardWidth / 2;
     this.circles[circleI].y = pile.y + table.cardHeight / 2;
   }
 
   drawCircles() {
+    if (bot.active) { return };
     if (this.tip == "") {
       return;
     }
@@ -797,6 +805,7 @@ class Table {
   }
 
   clearCentralBiggish(written: string) {
+    if (bot.active) { return };
     const fontSize = this.siteWindow.mediumFont;
     const heightCL = fontSize * 1.5;
     this.ctx.font = fontSize + "px Sans-Serif";
@@ -805,6 +814,7 @@ class Table {
   }
 
   writeCentralBiggish(written: string, height?: number) {
+    if (bot.active) { return };
     // height is where bottom of text will be.
     const fontSize = this.siteWindow.mediumFont;
     if (typeof (height) == 'undefined') {
@@ -818,6 +828,7 @@ class Table {
   }
 
   writeCentralBigRandomFont(written: string): number {
+    if (bot.active) { return };
     // ctx.measureText() measures width of text ....
     const fontSize = this.setBigRandomFont();
     const heightCL = fontSize * 1.5;
@@ -831,6 +842,7 @@ class Table {
   }
 
   setBigRandomFont(): number {
+    if (bot.active) { return };
     const fontSize = this.siteWindow.bigFont;
     const fontFamilies = ["Serif", "Sans-Serif", "Monospace", "Cursive", "Fantasy"];
     // list of fonts from https://blog.hubspot.com/website/web-safe-html-css-fonts
@@ -842,6 +854,7 @@ class Table {
   }
 
   setCtxFontSize(size: number) {
+    if (bot.active) { return };
     // font in form nnnpx font-name. change nnn to size
     let font = this.ctx.font;
     let pxPos = font.search("px"); 
@@ -850,15 +863,13 @@ class Table {
   }
 
   getCtxFontSize(): number {
+    if (bot.active) { return };
     let font = this.ctx.font;
     return Number(font.slice(0, font.search("px")));
   }
 
   showCards(area?: Area) {
-    //if (document.hidden) {
-    //  console.log("Document hidden");
-    //  return;
-    //}
+    if (bot.active) { return };
     if (typeof (area) == 'undefined') {
       area = new Area(0, 0, this.width, this.height);
     } else {
@@ -934,6 +945,7 @@ class Table {
   }
 
   showPlayerNamesScores(area: Area) {
+    if (bot.active) { return };
     this.ctx.font = this.siteWindow.smallFont + "px Sans-Serif";
     this.ctx.textAlign = "left";
     this.ctx.fillStyle = "#000000";   // was "#ffffc8" sickly yellow from colour picker  https://g.co/kgs/JspJG1
@@ -989,6 +1001,7 @@ class Table {
   }
 
   showScoreBoard(textHeight: number) {
+    if (bot.active) { return };
     // central area is empty, scoreboard goes there
     // always need heading line
     // round 1 needs 1 line, total 2 lines
@@ -1062,6 +1075,7 @@ class Table {
   }
 
   lastLine(totals: number[], highestScore: number, X: number, Y: number) {
+    if (bot.active) { return };
     let winners = "";
     let winnersN = 0;
     this.ctx.textAlign = "left";
@@ -1092,6 +1106,8 @@ class Table {
   }
 
   startGameAllowed(allowed: boolean) {
+    if (bot.active) { return };
+    const myConID = connection.connectionId;
     const startButton = document.getElementById("startButton") as HTMLButtonElement;
     if (!allowed) {
       startButton.disabled = true;
@@ -1109,6 +1125,7 @@ class Table {
       }
     }
     function pressStartQ(): void {
+      restoreGlobals(myConID);
       if (racingDemon.gameState == GameState.Playing) {
         // sometimes clearInterval is called by startGameAllowed(false)
         clearInterval(table.startAllowedFlasherID);
@@ -1127,12 +1144,17 @@ class Table {
 
   startGame2() {
     // start game on count of ready 2 steady 1 go 0
+    if (bot.active) {
+      this.startGame2bot();
+      return;
+    };
     (document.getElementById("inviteButton") as HTMLButtonElement).disabled = true;
     let moves = 4;
     const players = racingDemon.players.length;
-    table.clearTip();
+    table.writeTip("     ");
     let message = "";
     const interval = 1000;
+    const myConID = connection.connectionId;
     const id = setInterval(countDown, interval);
     let topRSGarea: number;
 
@@ -1155,6 +1177,7 @@ class Table {
     this.writeCentralBiggish(message, topRSGarea - 5);
 
     function countDown() {
+      restoreGlobals(myConID);
       switch (--moves) {
         case 3:
           topRSGarea = table.writeCentralBigRandomFont("Ready");
@@ -1168,23 +1191,36 @@ class Table {
           topRSGarea = table.writeCentralBigRandomFont("Go!");
           sound.sayGo();
           (document.getElementById("tidyButton") as HTMLButtonElement).disabled = true;
-          // gamsState was waiting, ShowingScores or GameOver
-          if (racingDemon.gameState == GameState.GameOver) {
-            table.gameCounter++;
-            table.roundCounter = 0;
-            racingDemon.allScores = [];
-            racingDemon.totalScores = [0, 0, 0, 0];
-          }
-          racingDemon.gameStateSet(GameState.Playing);
+          table.startGame3();
           table.showCards();    // clears messy table
-          const d = new Date();
-          ++table.roundCounter;
-          console.log("p" + racingDemon.playerI + " game " + table.gameCounter +
-            " round " + table.roundCounter + " start at " + d);
           clearInterval(id);
           break;
       }
 
+    }
+  }
+
+  startGame3() {
+    // gameState was waiting, ShowingScores or GameOver
+    if (racingDemon.gameState == GameState.GameOver) {
+      table.gameCounter++;
+      table.roundCounter = 0;
+      racingDemon.allScores = [];
+      racingDemon.totalScores = [0, 0, 0, 0];
+    }
+    racingDemon.gameStateSet(GameState.Playing);
+    const d = new Date();
+    ++table.roundCounter;
+    console.log("p" + racingDemon.playerI + " game " + table.gameCounter +
+      " round " + table.roundCounter + " start at " + d);
+  }
+
+  startGame2bot() {
+    setTimeout(myStart, 3000);
+    const myConID = connection.connectionId;
+    function myStart() {
+      restoreGlobals(myConID);
+      table.startGame3();
     }
   }
 
@@ -1205,8 +1241,10 @@ class Table {
     const wastePile = table.piles[wastePileI];
 
     table.lock("stockToWaste");
+    const myConID = connection.connectionId;
     const id = setInterval(flip, interval);
     function flip() {
+      restoreGlobals(myConID);
       areaBefore.clone(dragPile.area);
       switch (--moves) {
         case 5:
@@ -1317,9 +1355,11 @@ class Table {
       alert("incY is NaN in table.flyPile a");
     }
     table.lock("flyPile")
+    const myConID = connection.connectionId;
     const id = setInterval(fly1, interval);
 
     function fly1() {
+      restoreGlobals(myConID);
       if (pos >= moves) {
         clearInterval(id);
         dragPile.moveTo(x, y);

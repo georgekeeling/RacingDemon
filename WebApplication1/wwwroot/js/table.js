@@ -638,6 +638,10 @@ class Table {
         this.resize1(true);
     }
     writeText(text, x, y, ifOverlaps) {
+        if (bot.active) {
+            return;
+        }
+        ;
         // write text at x,y in cleared rectangle, possibly if overlaps the area
         // textAlign, font face and font size already set
         const descender = this.ctx.measureText("gypHt").actualBoundingBoxDescent;
@@ -654,14 +658,36 @@ class Table {
         return height;
     }
     writeTip(message) {
+        if (bot.active) {
+            return;
+        }
+        ;
         if (this.tip != "") {
             return; // only one tip at a time
         }
         this.tip = message;
         this.writeTip2();
-        setTimeout(this.clearTip, 5000);
+        const myConID = connection.connectionId;
+        setTimeout(clearTip, 5000);
+        function clearTip() {
+            // **************** shoulld expamd redraw area to include circles.
+            // this not working here.
+            restoreGlobals(myConID);
+            if (bot.active) {
+                return;
+            }
+            ;
+            table.tip = "";
+            table.circles[0].x = -1;
+            table.circles[1].x = -1;
+            table.showCards(this.tipArea);
+        }
     }
     writeTip2() {
+        if (bot.active) {
+            return;
+        }
+        ;
         if (this.tip == "") {
             return;
         }
@@ -673,26 +699,30 @@ class Table {
         this.tipArea.right = this.tipArea.left + width;
         this.tipArea.bottom = this.tipArea.top + height;
     }
-    clearTip() {
-        // **************** shoulld expamd redraw area to include circles.
-        // this not working here.
-        table.tip = "";
-        table.circles[0].x = -1;
-        table.circles[1].x = -1;
-        table.showCards(this.tipArea);
-    }
     drawCircle(pileI) {
+        if (bot.active) {
+            return;
+        }
+        ;
         const pile = table.piles[pileI];
         const centreX = pile.x + table.cardWidth / 2;
         const centreY = pile.y + table.cardHeight / 2;
         const radius = Math.sqrt(table.cardWidth * table.cardWidth + table.cardHeight * table.cardHeight) / 2;
     }
     createCircle(circleI, pileI) {
+        if (bot.active) {
+            return;
+        }
+        ;
         const pile = table.piles[pileI];
         this.circles[circleI].x = pile.x + table.cardWidth / 2;
         this.circles[circleI].y = pile.y + table.cardHeight / 2;
     }
     drawCircles() {
+        if (bot.active) {
+            return;
+        }
+        ;
         if (this.tip == "") {
             return;
         }
@@ -706,6 +736,10 @@ class Table {
         }
     }
     clearCentralBiggish(written) {
+        if (bot.active) {
+            return;
+        }
+        ;
         const fontSize = this.siteWindow.mediumFont;
         const heightCL = fontSize * 1.5;
         this.ctx.font = fontSize + "px Sans-Serif";
@@ -713,6 +747,10 @@ class Table {
         this.ctx.clearRect((this.width - textWidth) / 2, (this.height - heightCL) / 2, textWidth, heightCL);
     }
     writeCentralBiggish(written, height) {
+        if (bot.active) {
+            return;
+        }
+        ;
         // height is where bottom of text will be.
         const fontSize = this.siteWindow.mediumFont;
         if (typeof (height) == 'undefined') {
@@ -725,6 +763,10 @@ class Table {
         this.ctx.fillText(written, this.width / 2, height);
     }
     writeCentralBigRandomFont(written) {
+        if (bot.active) {
+            return;
+        }
+        ;
         // ctx.measureText() measures width of text ....
         const fontSize = this.setBigRandomFont();
         const heightCL = fontSize * 1.5;
@@ -736,6 +778,10 @@ class Table {
         return topCL; // top of cleared area
     }
     setBigRandomFont() {
+        if (bot.active) {
+            return;
+        }
+        ;
         const fontSize = this.siteWindow.bigFont;
         const fontFamilies = ["Serif", "Sans-Serif", "Monospace", "Cursive", "Fantasy"];
         // list of fonts from https://blog.hubspot.com/website/web-safe-html-css-fonts
@@ -746,6 +792,10 @@ class Table {
         return fontSize;
     }
     setCtxFontSize(size) {
+        if (bot.active) {
+            return;
+        }
+        ;
         // font in form nnnpx font-name. change nnn to size
         let font = this.ctx.font;
         let pxPos = font.search("px");
@@ -753,14 +803,18 @@ class Table {
         this.ctx.font = font;
     }
     getCtxFontSize() {
+        if (bot.active) {
+            return;
+        }
+        ;
         let font = this.ctx.font;
         return Number(font.slice(0, font.search("px")));
     }
     showCards(area) {
-        //if (document.hidden) {
-        //  console.log("Document hidden");
-        //  return;
-        //}
+        if (bot.active) {
+            return;
+        }
+        ;
         if (typeof (area) == 'undefined') {
             area = new Area(0, 0, this.width, this.height);
         }
@@ -836,6 +890,10 @@ class Table {
         }
     }
     showPlayerNamesScores(area) {
+        if (bot.active) {
+            return;
+        }
+        ;
         this.ctx.font = this.siteWindow.smallFont + "px Sans-Serif";
         this.ctx.textAlign = "left";
         this.ctx.fillStyle = "#000000"; // was "#ffffc8" sickly yellow from colour picker  https://g.co/kgs/JspJG1
@@ -888,6 +946,10 @@ class Table {
         }
     }
     showScoreBoard(textHeight) {
+        if (bot.active) {
+            return;
+        }
+        ;
         // central area is empty, scoreboard goes there
         // always need heading line
         // round 1 needs 1 line, total 2 lines
@@ -957,6 +1019,10 @@ class Table {
         this.ctx.restore();
     }
     lastLine(totals, highestScore, X, Y) {
+        if (bot.active) {
+            return;
+        }
+        ;
         let winners = "";
         let winnersN = 0;
         this.ctx.textAlign = "left";
@@ -985,6 +1051,11 @@ class Table {
         this.piles[pile].addCardP(playerI, cardIx, x, y, faceUp, angle);
     }
     startGameAllowed(allowed) {
+        if (bot.active) {
+            return;
+        }
+        ;
+        const myConID = connection.connectionId;
         const startButton = document.getElementById("startButton");
         if (!allowed) {
             startButton.disabled = true;
@@ -1002,6 +1073,7 @@ class Table {
             }
         }
         function pressStartQ() {
+            restoreGlobals(myConID);
             if (racingDemon.gameState == GameState.Playing) {
                 // sometimes clearInterval is called by startGameAllowed(false)
                 clearInterval(table.startAllowedFlasherID);
@@ -1018,12 +1090,18 @@ class Table {
     }
     startGame2() {
         // start game on count of ready 2 steady 1 go 0
+        if (bot.active) {
+            this.startGame2bot();
+            return;
+        }
+        ;
         document.getElementById("inviteButton").disabled = true;
         let moves = 4;
         const players = racingDemon.players.length;
-        table.clearTip();
+        table.writeTip("     ");
         let message = "";
         const interval = 1000;
+        const myConID = connection.connectionId;
         const id = setInterval(countDown, interval);
         let topRSGarea;
         this.startGameAllowed(false);
@@ -1042,6 +1120,7 @@ class Table {
         }
         this.writeCentralBiggish(message, topRSGarea - 5);
         function countDown() {
+            restoreGlobals(myConID);
             switch (--moves) {
                 case 3:
                     topRSGarea = table.writeCentralBigRandomFont("Ready");
@@ -1055,22 +1134,33 @@ class Table {
                     topRSGarea = table.writeCentralBigRandomFont("Go!");
                     sound.sayGo();
                     document.getElementById("tidyButton").disabled = true;
-                    // gamsState was waiting, ShowingScores or GameOver
-                    if (racingDemon.gameState == GameState.GameOver) {
-                        table.gameCounter++;
-                        table.roundCounter = 0;
-                        racingDemon.allScores = [];
-                        racingDemon.totalScores = [0, 0, 0, 0];
-                    }
-                    racingDemon.gameStateSet(GameState.Playing);
+                    table.startGame3();
                     table.showCards(); // clears messy table
-                    const d = new Date();
-                    ++table.roundCounter;
-                    console.log("p" + racingDemon.playerI + " game " + table.gameCounter +
-                        " round " + table.roundCounter + " start at " + d);
                     clearInterval(id);
                     break;
             }
+        }
+    }
+    startGame3() {
+        // gameState was waiting, ShowingScores or GameOver
+        if (racingDemon.gameState == GameState.GameOver) {
+            table.gameCounter++;
+            table.roundCounter = 0;
+            racingDemon.allScores = [];
+            racingDemon.totalScores = [0, 0, 0, 0];
+        }
+        racingDemon.gameStateSet(GameState.Playing);
+        const d = new Date();
+        ++table.roundCounter;
+        console.log("p" + racingDemon.playerI + " game " + table.gameCounter +
+            " round " + table.roundCounter + " start at " + d);
+    }
+    startGame2bot() {
+        setTimeout(myStart, 3000);
+        const myConID = connection.connectionId;
+        function myStart() {
+            restoreGlobals(myConID);
+            table.startGame3();
         }
     }
     stockToWaste() {
@@ -1089,8 +1179,10 @@ class Table {
         const wastePileI = StockPileI + 1;
         const wastePile = table.piles[wastePileI];
         table.lock("stockToWaste");
+        const myConID = connection.connectionId;
         const id = setInterval(flip, interval);
         function flip() {
+            restoreGlobals(myConID);
             areaBefore.clone(dragPile.area);
             switch (--moves) {
                 case 5:
@@ -1199,8 +1291,10 @@ class Table {
             alert("incY is NaN in table.flyPile a");
         }
         table.lock("flyPile");
+        const myConID = connection.connectionId;
         const id = setInterval(fly1, interval);
         function fly1() {
+            restoreGlobals(myConID);
             if (pos >= moves) {
                 clearInterval(id);
                 dragPile.moveTo(x, y);
