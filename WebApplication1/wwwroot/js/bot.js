@@ -53,16 +53,23 @@ class Bot {
                 console.log("bot: dragPile 'undefined'");
                 return;
             }
+            if (table.isLocked()) {
+                return;
+            }
+            ;
             if (dragPile.cards.length > 0) {
                 // must be busy like in sorting 
                 console.log("bot: dragPile.cards.length = " + dragPile.cards.length);
                 return;
             }
-            if (racingDemon.emptyDemon() && !bot.sentPlayerIsOut) {
-                bot.sentPlayerIsOut = true; // Must only send once !
-                console.log("bot sending PlayerIsOut");
+            if (racingDemon.emptyDemon()) {
+                if (bot.sentPlayerIsOut) {
+                    return; // Must only send once !
+                }
+                bot.sentPlayerIsOut = true;
+                console.log(racingDemon.playerI + "(bot). Sending PlayerIsOut");
                 sendGroup("PlayerIsOut", bot.name);
-                // racingDemon.out(); cannot use that because it would use plaer's name not bot's
+                // racingDemon.out(); cannot use that because it would use player's name not bot's
                 return;
             }
             if (document.getElementById("startButton").disabled == false) {
@@ -80,7 +87,6 @@ class Bot {
             if (racingDemon.gameState != GameState.Playing) {
                 return;
             }
-            console.log("bot" + racingDemon.playerI + ": sw s/f " + bot.stackedWasteSuccess + " / " + bot.stackedWasteFailed);
             if (bot.playToCommon()) {
                 bot.repeatCount = 0;
                 return;

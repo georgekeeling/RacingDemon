@@ -500,7 +500,7 @@ class Table {
         }
         // limit number of log messages. Chrome limit is 1,000 messages.
         if ((elapsedMs - this.prevElapsedMs) > 1000) {
-            console.log("Locked for " + elapsedMs + " ms");
+            console.log("p" + racingDemon.playerI + "Locked for " + elapsedMs + " ms");
             this.prevElapsedMs = elapsedMs;
         }
         if (elapsedMs > this.lockMaxTime) {

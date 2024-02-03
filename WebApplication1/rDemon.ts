@@ -32,6 +32,7 @@ class RacingDemon {
   dragToPileI = -1;          // might become 
 
   readyToDanceN = 0;   // this group control synchronization of actionsAfterOut across all players
+  processingOut = false;
   sortReadyPilesN = 0;
   readyToScoreN = 0;
 
@@ -318,6 +319,7 @@ class RacingDemon {
 
   out() {
     (document.getElementById("outButton") as HTMLButtonElement).disabled = true;
+    console.log(racingDemon.playerI + ". Sending PlayerIsOut");
     sendGroup("PlayerIsOut", uGroups.playerName);
   }
 
@@ -335,6 +337,9 @@ class RacingDemon {
     // first common pile (fcp) is at my4piles[0] = myFcpPileI
     // other common pile numbers depend on nr players
     // common piles must have been filled from RDcommonPile0 without any empty ones
+
+    if (this.processingOut) { return } // prevents lock up when two go out very close together 
+    this.processingOut = true; // see d2024-02-03 scoring stuck before starting.docx
     const playersN = racingDemon.players.length;
     const myFcpPileI = RDcommonPile0 + racingDemon.playerI;
     const lcpPile0 = RDcommonPile0 + playersN * 3;    // first lcp pile
@@ -656,6 +661,7 @@ class RacingDemon {
     this.sortReadyPilesN = 0;   // be prepared for end!
     this.readyToScoreN = 0;      // ditto
     this.readyToDanceN = 0;  // ditto
+    this.processingOut = false; // ditto
     this.otherPlayerLeft = false;
     bot.sentPlayerIsOut = false;
 

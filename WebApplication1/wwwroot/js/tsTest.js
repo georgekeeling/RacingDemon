@@ -1,10 +1,22 @@
 "use strict";
 // (c) George Arthur Keeling, Berlin 2023
 function doTest() {
-    endGame(15);
+    twoOuts();
+    // endGame(15);
 }
 //var doTest = 1;
-function testSetTimeOut() {
+function twoOuts() {
+    // simulate two going out very close together
+    // see d2024-02-03 scoring stuck before starting.docx
+    // when separated by 100 ms proroduced lock up before sorting
+    // fixed with introduction of racingDemon.processOut
+    restoreGlobals(0);
+    sendGroup("PlayerIsOut", uGroups.playerName);
+    setTimeout(sendNext, 100);
+    function sendNext() {
+        restoreGlobals(1);
+        sendGroup("PlayerIsOut", bot.name);
+    }
 }
 var chooser = 1;
 var con0id;

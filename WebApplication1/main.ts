@@ -16,8 +16,6 @@ var uGroups: UGroups;
 var bot: Bot;
 var connection;   // will be instance of HubConnection, comes out of chat.js
 
-console.log("main, root: created mouse,bot");
-
 function toPage(target) {
   document.getElementById("playPage").hidden = true;
   document.getElementById("setUpPage").hidden = true;
