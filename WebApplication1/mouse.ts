@@ -24,11 +24,6 @@ class Mouse {
   previousClickTime = 0;
   prevTouchX = -1;
   prevTouchY = -1;
-  keyPressed = -1;
-  // buttons to flip card, set rank or set suit
-  // First: f. Next 13: 0,1 ...9, J, Q, K. Next four; s,h,d,c. Last one: ESC
-  keyCodes=    [70, 48,49,50,51,52,53,54,55,56,57, 74, 81, 75, 83, 72, 68, 67];
-  translateKey=[70, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13,100,113,126,139];
 
   constructor() {
     // link up mouse events.
@@ -46,23 +41,7 @@ class Mouse {
 
     document.getElementById("setUpPage").addEventListener("touchmove", this.disableTchDefault);
     document.getElementById("playPage").addEventListener("touchmove", this.disableTchDefault);
-    document.body.addEventListener("keydown", this.keyPress);   // keypress must be on body element
-  }
-
-  keyPress(event) {
-    return;
-    if (event.keyCode == 27) {
-      debugger;     // escape key launches debugger
-    }
-    if (table.isLocked()) { return }
-    if (typeof (doTest) != 'function') { return }   // do not save key presses, see d2023-07-27-turnover disabled
-    let i = mouse.keyCodes.indexOf(event.which);
-    // console.log("evw: " + event.which + ", i: " + i);
-    if (i >= 0) {
-      mouse.keyPressed = mouse.translateKey[i];
-      return;   // keep value of key pressed if A,2...K, s,h,d,c
-    }
-    mouse.keyPressed = -1;
+    // document.body.addEventListener("keydown", this.keyPress);   // keypress must be on body element
   }
 
   down(message) {
@@ -162,28 +141,7 @@ class Mouse {
         let date = new Date();
         let mSeconds = date.getTime();
         if ((mSeconds - this.previousClickTime) > 100) {
-          if (this.keyPressed == -1) {
-            racingDemon.click(cpFound.pileI, cpFound.cardI);
-          }
-          else {
-            if (typeof (doTest) == 'function') {
-              // change the card, cheat
-              let card = table.piles[cpFound.pileI].cards[cpFound.cardI];
-              if (this.keyPressed == 70) {
-                // f: flip card
-                card.faceUp = !card.faceUp;
-              } else if (this.keyPressed >= 100) {
-                // change suit
-                card.cards52I = card.rank() - 1 + (this.keyPressed - 100);
-              } else {
-                // change card number
-                card.cards52I = (this.keyPressed - 1) + card.suit() * 13;
-              }
-              this.keyPressed = -1;
-              table.showCards(card.area);
-              racingDemon.cheated++;
-            }
-          }
+          racingDemon.click(cpFound.pileI, cpFound.cardI);
         }
         this.previousClickTime = mSeconds;
       }
@@ -259,7 +217,8 @@ class Mouse {
           // Error: An unexpected error occurred invoking 'PermitLanding' on the server.
           // see "...\demon debug\d2023-07-16 floating king\d2023-07-16 floating king overview.docx"
           // Now treat error like LandingDenied, while emitting error console and not very useful data
-          connection.invoke("PermitLanding", uGroups.myGroup, cpFound.pileI, bCards, RDflyPile0 + racingDemon.playerI).catch(function (err) {
+          connection.invoke("PermitLanding", uGroups.myGroup, cpFound.pileI, bCards, RDflyPile0 + racingDemon.playerI).catch(function (err)
+          {
             console.error(err.toString());
             let log = "Self-denied landing of p " + (RDflyPile0 + racingDemon.playerI) + " on p " + cpFound.pileI +
               " cards " + bCards.length;

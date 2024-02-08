@@ -22,8 +22,6 @@ class RacingDemon {
   gameState: GameState = GameState.Waiting;
   otherPlayerLeft = false;      // when other player leaves game, dramatic events take place. See playerDeparted
 
-  cheated = 0;          // count of cheats
-
   players: string[] = [];
   playerI = -1;
   stockPileI = - 1;
@@ -176,7 +174,7 @@ class RacingDemon {
       // leave test to PermitLanding, simplifies tip generation, circles.
       return DropAnswer.notSure;
     }
-    console.log("pl " + racingDemon.playerI + " attempted landing on no pile");
+    console.log("p" + racingDemon.playerI + " attempted landing on no pile");
     table.writeTip("Card must go on pile")
     return DropAnswer.no;
   }
@@ -218,7 +216,7 @@ class RacingDemon {
       let corner = Math.floor(Math.random() * 4);
       let x:number;
       let y: number;
-      console.log("Flying king pile " + this.dragToPileI + ". Corner " + corner);
+      console.log("p" + racingDemon.playerI + " Flying king pile " + this.dragToPileI + ". Corner " + corner);
       switch (corner) {
         case 0:
           // top left or upper left
@@ -319,7 +317,7 @@ class RacingDemon {
 
   out() {
     (document.getElementById("outButton") as HTMLButtonElement).disabled = true;
-    console.log(racingDemon.playerI + ". Sending PlayerIsOut");
+    console.log("p" + racingDemon.playerI + ". Sending PlayerIsOut");
     sendGroup("PlayerIsOut", uGroups.playerName);
   }
 
@@ -395,7 +393,7 @@ class RacingDemon {
         racingDemon.gameStateSet(GameState.Scoring);
         sendGroup("ReadyToDance");
         // v important that message only sent once!
-        console.log("Player " + racingDemon.playerI + " sent ready to dance");
+        console.log("p" + racingDemon.playerI + " sent ready to dance");
       }
       switch (step) {
         case 1:
@@ -418,7 +416,7 @@ class RacingDemon {
           {
             // move fcp to drag, empty fcp, place fcp central above my work piles fly drag to fcp
             if (racingDemon.readyToDanceN < playersN) {
-              console.log("Player " + racingDemon.playerI + " waiting to dance");
+              console.log("p" + racingDemon.playerI + " waiting to dance");
               return;
             }
             if (fcpPile.cards.length == 0) {
@@ -642,7 +640,6 @@ class RacingDemon {
     this.gameStateSet(GameState.Waiting);
     this.allScores = [];
     this.totalScores = [0, 0, 0, 0];
-    this.cheated = 0;
     this.deal2();
     sendGroup("UpdatePiles");
   }

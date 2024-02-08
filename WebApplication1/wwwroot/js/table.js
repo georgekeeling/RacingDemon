@@ -326,8 +326,6 @@ class Pile {
         let bPileXY = new Bcard(racingDemon.playerI, 0, this.x, this.y, false, 0);
         bPileXY.coordsForServer();
         let bCards = this.createBcardsForBroadcast();
-        //console.log("PileBroadcast from player:" + racingDemon.playerI + " pile:" + pileI + " x,y:" +
-        //  Math.round(bPileXY.x) + "," + Math.round (bPileXY.y) + " bCards:" + bCards.length);
         sendGroup("PileBroadcast", pileI, bPileXY.x, bPileXY.y, bCards);
     }
     createBcardsForBroadcast() {
@@ -341,7 +339,6 @@ class Pile {
     }
     receive(pileI, pileX, pileY, bCardsIn) {
         // receive pile data that was sent out by broadcast (probably from another player)
-        // console.log("Player: " + racingDemon.playerI + " received " + bCardsIn.length + " cards.");
         let redrawArea = new Area(this.area.left, this.area.top, this.area.right, this.area.bottom);
         let bPileXY = new Bcard(racingDemon.playerI, 0, pileX, pileY, false, 0);
         bPileXY.coordsForReceive();
@@ -500,7 +497,7 @@ class Table {
         }
         // limit number of log messages. Chrome limit is 1,000 messages.
         if ((elapsedMs - this.prevElapsedMs) > 1000) {
-            console.log("p" + racingDemon.playerI + "Locked for " + elapsedMs + " ms");
+            console.log("p" + racingDemon.playerI + " Locked for " + elapsedMs + " ms");
             this.prevElapsedMs = elapsedMs;
         }
         if (elapsedMs > this.lockMaxTime) {
@@ -1090,6 +1087,11 @@ class Table {
     }
     startGame2() {
         // start game on count of ready 2 steady 1 go 0
+        if (bot.startTimeOut != 0) {
+            clearTimeout(bot.startTimeOut);
+            console.log("p" + racingDemon.playerI + " bot cleared " + bot.startTimeOut);
+            bot.startTimeOut = 0;
+        }
         if (bot.active) {
             this.startGame2bot();
             return;

@@ -83,12 +83,13 @@
   <audio id="audioDing" src="sounds/ding.mp3"></audio>
 
   </div>
-  <div id="setUpPage"> <!-- *** Set up page *** -->
+  <div id="setUpPage">
+    <!-- *** Set up page *** -->
     <span class="butPageSpan">
-    &nbsp;<button id="playButton" class="butPage" onclick="toPage('playPage')" >Game</button>
-    <button id="setUpButton" class="butPage" onclick="toPage('setUpPage')" >Set up</button>
-    <button id="rulesButton" class="butPage" onclick="window.open('rules.html', '_blank')" >Rules ↗</button>
-    <button id="wButton" class="butPage" onclick="window.open(window.location.origin, '_blank')" hidden>W ↗</button>
+      &nbsp;<button id="playButton" class="butPage" onclick="toPage('playPage')">Game</button>
+      <button id="setUpButton" class="butPageOn" onclick="toPage('setUpPage')">Set up</button>
+      <button id="rulesButton" class="butPage" onclick="window.open('rules.html', '_blank')">Rules ↗</button>
+      <button id="wButton" class="butPage" onclick="window.open(window.location.origin, '_blank')" hidden>W ↗</button>
     </span>
     <span>&nbsp;<button id="testButton" onclick="doTest()" hidden>T</button></span>
     <div class="row1 col1">
@@ -99,13 +100,13 @@
     </div>
     <div class="row2 col1">
       <label for="gameList">
-      Game
+        Game
       </label>
     </div>
     <div class="row2 col2">
-    <select name="selGame" id="gameList" onchange="restoreGlobals(0);uGroups.selGameChange()" tabindex="3">
-      <option value="Game2">None</option>
-    </select>
+      <select name="selGame" id="gameList" onchange="restoreGlobals(0);uGroups.selGameChange()" tabindex="3">
+        <option value="Game2">None</option>
+      </select>
     </div>
     <div class="row2 col3">
       <button id="buttonJoin" onclick="restoreGlobals(0);uGroups.joinGame()" disabled tabindex="4">Join</button>
@@ -115,16 +116,16 @@
     </div>
     <div class="row3 col1">
       <label for="botType">
-      Bot
+        Bot
       </label>
     </div>
     <div class="row3 col2">
-    <select id="botType" onchange="restoreGlobals(0);bot.setType()" tabindex="6">
-      <option value="0">-</option>
-      <option value="1">Slow Bot</option>
-      <option value="2">Medium Bot</option>
-      <option value="3">Fast Bot</option>
-    </select>
+      <select id="botType" onchange="restoreGlobals(0);bot.setType()" tabindex="6">
+        <option value="0">-</option>
+        <option value="1">Slow Bot</option>
+        <option value="2">Medium Bot</option>
+        <option value="3">Fast Bot</option>
+      </select>
     </div>
     <div class="row3 col3">
       <button id="buttonPlayBot" onclick="restoreGlobals(0);uGroups.playBot()" disabled tabindex="7">Play It</button>
@@ -144,15 +145,17 @@
       May the best player win!
 
     </div>
-
   </div>
 
-  <div id="playPage" hidden> <!-- *** Play page *** -->
-    <span class="butPageSpan">&nbsp;<button id="playButton" class="butPage" onclick="toPage('playPage')">Game</button>
-    <button id="setUpButton" class="butPage" onclick="toPage('setUpPage')">Set up</button>
-    <button id="rulesButton" class="butPage" onclick="window.open('rules.html', '_blank')">Rules ↗</button>
-    <button id="wButton2" class="butPage" onclick="window.open(window.location.origin, '_blank')" hidden>W ↗</button></span>
-    
+  <div id="playPage" hidden>
+    <!-- *** Play page *** -->
+    <span class="butPageSpan">
+      &nbsp;<button id="playButton" class="butPageOn" onclick="toPage('playPage')">Game</button>
+      <button id="setUpButton" class="butPage" onclick="toPage('setUpPage')">Set up</button>
+      <button id="rulesButton" class="butPage" onclick="window.open('rules.html', '_blank')">Rules ↗</button>
+      <button id="wButton2" class="butPage" onclick="window.open(window.location.origin, '_blank')" hidden>W ↗</button>
+    </span>
+
     <span>&nbsp;<button id="inviteButton" onclick="restoreGlobals(0);uGroups.invite()">Invite</button></span>
     <span><button id="startButton" onclick="restoreGlobals(0);table.startGame()" disabled>Start</button></span>
     <span><button id="outButton" onclick="restoreGlobals(0);racingDemon.out()" disabled>Out</button></span>
@@ -166,9 +169,9 @@
       </canvas>
     </div>
     <!-- can position canvas with something like
-    ; position:absolute; left:50px
-    in style=, and then would have to adjust 50px in resize
-    -->
+  ; position:absolute; left:50px
+  in style=, and then would have to adjust 50px in resize
+  -->
 
   </div>
 

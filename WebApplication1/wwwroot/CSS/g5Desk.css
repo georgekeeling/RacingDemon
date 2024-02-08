@@ -18,10 +18,19 @@ button {
   color: white;
 }
 
+.butPageOn {
+  /* button that changes page / tab which we are on */
+  cursor: none;
+  border-radius: 0px;
+  border: none;
+  background-color: black;
+  color: green;
+}
+
 .butPageSpan {
   /* span that contains butpages. Want background all same */
-  height: 20px;
   background-color: darkgrey;
+  border: 5px solid darkgrey;
 }
 
 select, option, input[type=text], input[type=password] {

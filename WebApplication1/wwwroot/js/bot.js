@@ -9,6 +9,7 @@ class Bot {
         // 2 creating bot. 4 created
         this.active = false; // when true, no canvas updates will occur
         // except via messaging on other players canvas
+        this.startTimeOut = 0;
         this.sentPlayerIsOut = false;
         this.stackedWasteSuccess = 0;
         this.stackedWasteFailed = 0;
@@ -110,12 +111,18 @@ class Bot {
         }
     }
     startGameInAminute() {
-        // ready to start game, wait half a minute to view scores,
+        // ready to start game, wait a minute to view scores,
         // In the meantime other player may press start
+        if (bot.startTimeOut != 0) {
+            return;
+        }
         const myConID = connection.connectionId;
-        setTimeout(reallyStart, 30000);
+        bot.startTimeOut = setTimeout(reallyStart, 60000);
+        console.log("p" + racingDemon.playerI + " bot start " + bot.startTimeOut);
         function reallyStart() {
             restoreGlobals(myConID);
+            console.log("p" + racingDemon.playerI + " bot reallyStart " + bot.startTimeOut);
+            bot.startTimeOut = 0;
             if (racingDemon.gameState != GameState.Playing) {
                 table.startGame();
             }

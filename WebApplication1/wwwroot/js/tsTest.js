@@ -1,10 +1,29 @@
 "use strict";
 // (c) George Arthur Keeling, Berlin 2023
 function doTest() {
-    twoOuts();
-    // endGame(15);
+    testBotStarter();
 }
 //var doTest = 1;
+var chooserA = 1;
+function testBotStarter() {
+    switch (chooserA++) {
+        case 1:
+            bot.startTimeOut = setTimeout(doSomething, 5000);
+            console.log("start " + bot.startTimeOut);
+            break;
+        case 2:
+            if (bot.startTimeOut != 0) {
+                clearTimeout(bot.startTimeOut);
+                console.log("cleared " + bot.startTimeOut);
+                bot.startTimeOut = 0;
+            }
+            chooserA = 1;
+            break;
+    }
+    function doSomething() {
+        alert("something");
+    }
+}
 function twoOuts() {
     // simulate two going out very close together
     // see d2024-02-03 scoring stuck before starting.docx
@@ -276,7 +295,7 @@ function endGame(cPilesN) {
 }
 function cheatDemon() {
     // to hurry everything along, reduce demon pile
-    restoreGlobals(1); // 0 for player's demon, 1 for bot's
+    restoreGlobals(0); // 0 for player's demon, 1 for bot's
     const demonPileI = racingDemon.playerI * RDhomePiles + 2;
     const pile = table.piles[demonPileI];
     pile.cards.length = 3;

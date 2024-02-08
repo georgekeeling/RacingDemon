@@ -100,13 +100,13 @@ function declareMessages(){
   connection.on("LandingDenied", function (pileI: number, reason: number) {
     // pileI = -1 if landing was off table, otherwise pileI is pile that landing was too close to
     restoreGlobals(this.connectionId);
-    console.log("pl " + racingDemon.playerI + ". LandingDenied " + pileI + " reason " + reason);
+    console.log("p" + racingDemon.playerI + " LandingDenied " + pileI + " reason " + reason);
     mouse.dragAbortFromServer(pileI, reason);
   });
 
   connection.on("LandingAccepted", function (pileI: number) {
     restoreGlobals(this.connectionId);
-    console.log("pl " + racingDemon.playerI + ".LandingAccepted " + pileI);
+    console.log("p" + racingDemon.playerI + " LandingAccepted " + pileI);
     mouse.dragSuccess();
   });
   connection.on("StartGame2", function () {
@@ -143,7 +143,7 @@ function declareMessages(){
   // test and diagnostic
   connection.on("Console", function (message: string) {
     restoreGlobals(this.connectionId);
-    console.log("pl " + racingDemon.playerI + ": " + message);
+    console.log("p" + racingDemon.playerI + " from server " + message);
   });
   connection.on("pingBack", function (message: string) {
     restoreGlobals(this.connectionId);
