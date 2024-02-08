@@ -42,8 +42,14 @@ class UGroups {
         // must enable / disable botType and buttonJoin after groups change.
         // Latter done in showGroups / selGameChange
         this.showGroups();
-        document.getElementById("botType").disabled =
-            this.gameForbidden(this.myGroup);
+        if (this.myGroup == "") {
+            // special case on fresh screen
+            document.getElementById("botType").disabled = false;
+        }
+        else {
+            document.getElementById("botType").disabled =
+                this.gameForbidden(this.myGroup);
+        }
         if (this.webPageStarting) {
             document.getElementById("userName").focus;
             this.webPageStarting = false;
