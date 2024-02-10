@@ -57,7 +57,13 @@ function Initialise() {
 function initialise2() {
     // assume here we only have one connection!
     connectionStarting = null;
-    console.log("chat, start.then(func)");
+    // increased these from 30000/60000, the default
+    // The recommended serverTimeoutInMilliseconds value is double the KeepAliveInterval value.
+    // https://learn.microsoft.com/en-us/aspnet/core/signalr/configuration?view=aspnetcore-8.0&tabs=dotnet
+    connection.keepAliveIntervalInMilliseconds = 100000;
+    connection.serverTimeoutInMilliseconds = 2 * connection.keepAliveIntervalInMilliseconds;
+    console.log("main, initialise2. kAIms " + connection.keepAliveIntervalInMilliseconds +
+        ". sTms " + connection.serverTimeoutInMilliseconds);
     document.getElementById("buttonCreate").disabled = false;
     // sometimes we get here before TellMeGroups in userGroups is loaded.
     // Have seen it failing "1 times", but then its OK

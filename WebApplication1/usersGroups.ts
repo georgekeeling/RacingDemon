@@ -294,6 +294,8 @@ class UGroups {
     // it works as expected in testGlobals
     restoreGlobals(connectionStarting.connectionId);
     connectionStarting = null;
+    connection.keepAliveIntervalInMilliseconds = 100000;    // see main, initialise2
+    connection.serverTimeoutInMilliseconds = 2 * connection.keepAliveIntervalInMilliseconds;
     bot.createStage = 3;    // now creating bot
     switch (bot.speed) {
       case 0:
